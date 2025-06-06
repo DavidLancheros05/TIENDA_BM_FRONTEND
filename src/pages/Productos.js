@@ -8,10 +8,11 @@ const Productos = () => {
   const { carrito, agregarAlCarrito } = useContext(CarritoContext);
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/productos')
-      .then(res => setProductos(res.data))
-      .catch(err => console.error(err));
-  }, []);
+  axios
+    .get(`${import.meta.env.VITE_API_URL}/api/productos`)
+    .then(res => setProductos(res.data))
+    .catch(err => console.error(err));
+}, []);
 
   const total = carrito.reduce((acc, item) => acc + item.precio * item.cantidad, 0);
 
@@ -56,7 +57,7 @@ const Productos = () => {
             <div className="col-md-3 mb-4" key={producto._id}>
               <div className="card h-100 shadow-sm">
                 <img
-                  src={`http://localhost:5000${producto.imagen}`}
+                  src={`${import.meta.env.VITE_API_URL}${producto.imagen}`}
                   alt={producto.nombre}
                   className="card-img-top"
                   style={{ height: '180px', objectFit: 'cover' }}

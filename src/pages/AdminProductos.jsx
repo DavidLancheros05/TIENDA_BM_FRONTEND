@@ -34,7 +34,7 @@ function AdminProductos() {
   useEffect(() => {
     const fetchProductos = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/productos');
+        const res = await `${import.meta.env.VITE_API_URL}/api/productos`;
         setProductos(res.data);
       } catch (error) {
         console.error('Error al cargar productos:', error);
