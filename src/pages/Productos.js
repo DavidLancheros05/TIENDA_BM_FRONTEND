@@ -9,7 +9,7 @@ const Productos = () => {
 
   useEffect(() => {
   axios
-    .get(`${import.meta.env.VITE_API_URL}/api/productos`)
+    .get(`${process.env.REACT_APP_API_URL}/api/productos`)
     .then(res => setProductos(res.data))
     .catch(err => console.error(err));
 }, []);
@@ -57,7 +57,7 @@ const Productos = () => {
             <div className="col-md-3 mb-4" key={producto._id}>
               <div className="card h-100 shadow-sm">
                 <img
-                  src={`${import.meta.env.VITE_API_URL}${producto.imagen}`}
+                  src={`${process.env.REACT_APP_API_URL}${producto.imagen}`}
                   alt={producto.nombre}
                   className="card-img-top"
                   style={{ height: '180px', objectFit: 'cover' }}
