@@ -2,7 +2,8 @@ import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 import { CarritoContext } from '../context/CarritoContext';
 import { Link } from 'react-router-dom';
-console.log('API URL:', import.meta.env.VITE_API_URL);
+// Después (funciona con Create React App)
+console.log('API URL:', process.env.REACT_APP_API_URL);
 const Productos = () => {
   const [productos, setProductos] = useState([]);
   const { carrito, agregarAlCarrito } = useContext(CarritoContext);
