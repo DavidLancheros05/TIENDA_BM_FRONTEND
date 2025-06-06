@@ -1,31 +1,36 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';  // IMPORTAR AXIOS
 
 export default function LoginAdmin({ setToken }) {
   const [correo, setCorreo] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
-const API_URL = process.env.REACT_APP_API_URL;
+  const API_URL = process.env.REACT_APP_API_URL;
+
   const handleSubmit = async e => {
     e.preventDefault();
 
     try {
       const res = await axios.post(`${API_URL}/api/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ correo, password }),
+        correo,
+        password,
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+        }
       });
 
-      const data = await res.json();
+      const data = res.data; // axios ya parsea el JSON
 
-      if (!res.ok) throw new Error(data.msg || 'Error en login');
+      if (!res.status === 200) throw new Error(data.msg || 'Error en login');
 
       setToken(data.token);
       localStorage.setItem('token', data.token);
-      navigate('/adminDashboard');  // redirigir a dashboard admin
+      navigate('/adminDashboard');
     } catch (err) {
-      setError(err.message);
+      setError(err.response?.data?.msg || err.message);
     }
   };
 
