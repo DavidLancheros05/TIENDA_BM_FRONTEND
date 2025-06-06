@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+const API_URL = process.env.REACT_APP_API_URL;
 
 const AgregarProducto = ({ token }) => {
   const [formData, setFormData] = useState({
@@ -21,7 +22,7 @@ const AgregarProducto = ({ token }) => {
     e.preventDefault();
 
     try {
-      const res = await fetch('http://localhost:5000/api/productos', {
+      const res = await axios.post(`${API_URL}/api/productos`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -22,7 +22,7 @@ function PagoPSE() {
     e.preventDefault();
 
     try {
-      const res = await axios.post('http://localhost:5000/api/crear-pago-pse', form);
+      const res = await axios.post(`${API_URL}/api/crear-pago-pse`, form);
 
       // Aquí asumo que la respuesta te devuelve el resumen de la transacción directamente
       // Si solo te da redirectUrl, entonces rediriges y obtienes la respuesta después
