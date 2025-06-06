@@ -4,7 +4,7 @@ import axios from 'axios';
 function AdminProductos() {
   const [productos, setProductos] = useState([]);
   const [editId, setEditId] = useState(null);
-const API_URL = process.env.REACT_APP_API_URL;
+  const API_URL = process.env.REACT_APP_API_URL;
 
   // Estado para editar producto con todos los campos
   const [formEdit, setFormEdit] = useState({
@@ -32,17 +32,19 @@ const API_URL = process.env.REACT_APP_API_URL;
     headers: { Authorization: `Bearer ${token}` }
   };
 
+  // Traer productos al cargar el componente
   useEffect(() => {
     const fetchProductos = async () => {
       try {
-        const res = await axios.put(`${API_URL}/api/productos`);
+        // Usamos GET para obtener productos
+        const res = await axios.get(`${API_URL}/api/productos`);
         setProductos(res.data);
       } catch (error) {
         console.error('Error al cargar productos:', error);
       }
     };
-    fetchProductos();
-  }, []);
+    if (API_URL) fetchProductos();
+  }, [API_URL]); // API_URL debe estar en dependencias
 
   // === EDITAR ===
   const handleEditClick = (producto) => {
@@ -106,8 +108,8 @@ const API_URL = process.env.REACT_APP_API_URL;
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`${API_URL}/api/productos`, formNew, config);
-      setProductos(prev => [...prev, res.data]);
+      const res = await axios.post(`${API_URL}/api/productos`, formNew, config);
+      setProductos(prev => [...prev, res.data]); // corregido aquí, antes res no estaba definido
       setFormNew({
         nombre: '',
         descripcion: '',
