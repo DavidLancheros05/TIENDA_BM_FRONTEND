@@ -1,36 +1,32 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';  // IMPORTAR AXIOS
+import axios from 'axios';
 
 export default function LoginAdmin({ setToken }) {
   const [correo, setCorreo] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+
   const API_URL = process.env.REACT_APP_API_URL;
 
   const handleSubmit = async e => {
     e.preventDefault();
 
     try {
-      const res = await axios.post(`${API_URL}/api/auth/login`, {
-        correo,
-        password,
-      }, {
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      });
+      // axios no necesita que pases method, headers ni body en este formato
+      const res = await axios.post(`${API_URL}/api/auth/login`, { correo, password });
 
-      const data = res.data; // axios ya parsea el JSON
+      // axios ya parsea JSON automáticamente
+      const data = res.data;
 
       if (!res.status === 200) throw new Error(data.msg || 'Error en login');
 
       setToken(data.token);
       localStorage.setItem('token', data.token);
-      navigate('/adminDashboard');
+      navigate('/adminDashboard');  // redirigir a dashboard admin
     } catch (err) {
-      setError(err.response?.data?.msg || err.message);
+      setError(err.response?.data?.msg || err.message || 'Error en login');
     }
   };
 
@@ -38,18 +34,18 @@ export default function LoginAdmin({ setToken }) {
     <div>
       <h2>Login Admin</h2>
       <form onSubmit={handleSubmit}>
-        <input 
-          type="email" 
-          placeholder="Correo" 
-          value={correo} 
-          onChange={e => setCorreo(e.target.value)} 
+        <input
+          type="email"
+          placeholder="Correo"
+          value={correo}
+          onChange={e => setCorreo(e.target.value)}
           required
         />
-        <input 
-          type="password" 
-          placeholder="Contraseña" 
-          value={password} 
-          onChange={e => setPassword(e.target.value)} 
+        <input
+          type="password"
+          placeholder="Contraseña"
+          value={password}
+          onChange={e => setPassword(e.target.value)}
           required
         />
         <button type="submit">Ingresar</button>
