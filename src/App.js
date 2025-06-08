@@ -1,38 +1,40 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import { CarritoProvider } from './context/CarritoContext';
+import { AuthProvider } from './context/AuthContext'; // ✅ Importamos AuthProvider
+
+import Header from './components/Header';
+import Footer from './components/Footer';
+import Register from './pages/Register';
 import Productos from './pages/Productos';
-import Carrito from './components/Carrito';
-import AgregarProducto from './pages/AgregarProducto';
+import Carrito from './pages/Carrito';
+
 import AdminDashboard from './pages/AdminDashboard';
-import LoginAdmin from './pages/LoginAdmin';
+import LoginAdmin from './pages/Login';
 import AdminProductos from './pages/AdminProductos';
-
+import Bicicletas from './pages/Bicicletas';
+import Accesorios from './pages/Accesorios';
 function App() {
-  const [token, setToken] = useState(localStorage.getItem('token') || '');
-
   return (
-    <CarritoProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <>
-                <Productos />
-                <Carrito />
-              </>
-            }
-          />
-          <Route path="/login" element={<LoginAdmin setToken={setToken} />} />
-          <Route path="/adminDashboard" element={<AdminDashboard />} />
-          <Route path="/admin/productos" element={<AdminProductos />} />
-          <Route path="/admin/agregar-producto" element={<AgregarProducto token={token} />} />
-        </Routes>
-      </BrowserRouter>
-    </CarritoProvider>
+    <AuthProvider>
+      <CarritoProvider>
+        <BrowserRouter>
+          <Header />
+          <Routes>
+            <Route path="/" element={<Productos />} />
+            <Route path="/carrito" element={<Carrito />} />
+            <Route path="/login" element={<LoginAdmin />} />
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/productos" element={<AdminProductos />} />
+            <Route path="/bicicletas" element={<Bicicletas />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/accesorios" element={<Accesorios />} />
+          </Routes>
+          <Footer />
+        </BrowserRouter>
+      </CarritoProvider>
+    </AuthProvider>
   );
 }
-
 export default App;

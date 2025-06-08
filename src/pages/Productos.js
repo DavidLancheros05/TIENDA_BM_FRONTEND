@@ -19,33 +19,7 @@ const Productos = () => {
 
   return (
     <>
-      {/* Header */}
-      <header
-        style={{
-          backgroundColor: '#0d6efd',
-          color: 'white',
-          padding: '0.75rem 1rem',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          position: 'sticky',
-          top: 0,
-          zIndex: 100,
-          boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
-        }}
-      >
-        <h1 style={{ fontSize: '1.5rem', margin: 0, cursor: 'pointer' }}>
-          🚴‍♂️ <span style={{ fontWeight: 'bold' }}>BiciShop</span>
-        </h1>
-        <nav>
-          <Link to="/" style={{ color: 'white', marginRight: '15px', textDecoration: 'none', fontWeight: '500' }}>
-            Productos
-          </Link>
-          <Link to="/login" style={{ color: 'white', textDecoration: 'none', fontWeight: '500' }}>
-            Admin
-          </Link>
-        </nav>
-      </header>
+
 
       {/* Contenido principal */}
       <main className="container" style={{ padding: '2rem 1rem', maxWidth: '1140px', margin: 'auto' }}>
@@ -81,28 +55,7 @@ const Productos = () => {
       </main>
 
       {/* Pie de página */}
-      <footer
-        style={{
-          backgroundColor: '#222',
-          color: 'white',
-          padding: '1rem 1rem',
-          textAlign: 'center',
-          marginTop: '2rem',
-        }}
-      >
-        <div style={{ marginBottom: '0.5rem' }}>
-          <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" style={{ color: 'white', margin: '0 8px' }}>
-            Facebook
-          </a>
-          <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" style={{ color: 'white', margin: '0 8px' }}>
-            Twitter
-          </a>
-          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" style={{ color: 'white', margin: '0 8px' }}>
-            Instagram
-          </a>
-        </div>
-        <small>© 2025 BiciShop. Todos los derechos reservados.</small>
-      </footer>
+      
 
       {/* Carrito flotante (como antes) */}
       <Link to="/carrito" style={{ textDecoration: 'none' }}>
