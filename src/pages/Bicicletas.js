@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 import { CarritoContext } from '../context/CarritoContext';
 
 const Bicicletas = () => {
@@ -17,7 +18,6 @@ const Bicicletas = () => {
       .catch(err => console.error(err));
   }, []);
 
-  // Filtrar productos por nombre según filtro de búsqueda (solo si filtro no vacío)
   const productosFiltrados = filtro
     ? productos.filter(producto =>
         producto.nombre?.toLowerCase().includes(filtro.toLowerCase())
@@ -40,20 +40,27 @@ const Bicicletas = () => {
         {productosFiltrados.length > 0 ? (
           productosFiltrados.map(producto => (
             <div className="col-md-3 mb-4" key={producto._id}>
-              <div className="card h-100 shadow-sm">
-                <img
-                  src={`${process.env.REACT_APP_API_URL}/${producto.imagen}`}
-                  alt={producto.nombre}
-                  className="card-img-top"
-                  style={{ height: '180px', objectFit: 'cover' }}
-                />
-                <div className="card-body d-flex flex-column">
-                  <h5 className="card-title">{producto.nombre}</h5>
-                  <p className="card-text text-muted">{producto.descripcion}</p>
-                  <p className="fw-bold text-success">${producto.precio.toFixed(2)}</p>
+              <div className="card h-100 shadow-sm d-flex flex-column">
+                <Link
+                  to={`/producto/${producto._id}`}
+                  className="text-decoration-none text-dark"
+                >
+                  <img
+                    src={`${process.env.REACT_APP_API_URL}/${producto.imagen}`}
+                    alt={producto.nombre}
+                    className="card-img-top"
+                    style={{ height: '180px', objectFit: 'cover' }}
+                  />
+                  <div className="card-body">
+                    <h5 className="card-title">{producto.nombre}</h5>
+                    <p className="card-text text-muted">{producto.descripcion}</p>
+                    <p className="fw-bold text-success">${producto.precio.toFixed(2)}</p>
+                  </div>
+                </Link>
+                <div className="card-footer border-0 bg-transparent mt-auto">
                   <button
                     onClick={() => agregarAlCarrito(producto)}
-                    className="btn btn-outline-primary mt-auto"
+                    className="btn btn-outline-primary w-100"
                   >
                     Agregar al carrito
                   </button>
