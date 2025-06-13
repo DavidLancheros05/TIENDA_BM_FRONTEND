@@ -15,11 +15,7 @@ export default function Login() {
   const handleSubmit = async e => {
     e.preventDefault();
     try {
-      console.log('Datos enviados al backend desde el login front:', { correo, password });
       const res = await axios.post(`${API_URL}/api/auth/login`, { correo, password });
-      
-
-      // Asumiendo backend devuelve { token, user: { rol, ... } }
       const { token, user } = res.data;
       const rol = user.rol;
 
@@ -36,33 +32,49 @@ export default function Login() {
   };
 
   return (
-    <div style={{ maxWidth: '400px', margin: 'auto' }}>
-      <h2>Iniciar Sesión</h2>
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-        <input
-          type="email"
-          placeholder="Correo"
-          value={correo}
-          onChange={e => setCorreo(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Contraseña"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-          required
-        />
-        <button type="submit" style={{ padding: '8px', cursor: 'pointer' }}>Ingresar</button>
-      </form>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+    <div className="container d-flex justify-content-center align-items-center vh-100">
+      <div className="card shadow p-4" style={{ width: '100%', maxWidth: '400px' }}>
+        <h2 className="text-center mb-4">Iniciar Sesión</h2>
 
-      <p style={{ marginTop: '15px' }}>
-        ¿No tienes cuenta?{' '}
-        <Link to="/register" style={{ color: 'blue', textDecoration: 'underline' }}>
-          Registrar
-        </Link>
-      </p>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-3">
+            <label htmlFor="correo" className="form-label">Correo electrónico</label>
+            <input
+              type="email"
+              className="form-control"
+              id="correo"
+              placeholder="correo@ejemplo.com"
+              value={correo}
+              onChange={e => setCorreo(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="mb-3">
+            <label htmlFor="password" className="form-label">Contraseña</label>
+            <input
+              type="password"
+              className="form-control"
+              id="password"
+              placeholder="••••••"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              required
+            />
+          </div>
+
+          <button type="submit" className="btn btn-primary w-100">Ingresar</button>
+        </form>
+
+        {error && <div className="alert alert-danger mt-3">{error}</div>}
+
+        <p className="mt-3 text-center">
+          ¿No tienes cuenta?{' '}
+          <Link to="/register" className="text-decoration-none">
+            Regístrate aquí
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }
