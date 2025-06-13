@@ -15,7 +15,9 @@ export default function Login() {
   const handleSubmit = async e => {
     e.preventDefault();
     try {
+      console.log('Datos enviados al backend desde el login front:', { correo, password });
       const res = await axios.post(`${API_URL}/api/auth/login`, { correo, password });
+      
 
       // Asumiendo backend devuelve { token, user: { rol, ... } }
       const { token, user } = res.data;

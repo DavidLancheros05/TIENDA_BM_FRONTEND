@@ -2,44 +2,50 @@ import React from 'react';
 
 const Footer = () => {
   return (
-    <footer
-      style={{
-        backgroundColor: '#222',
-        color: 'white',
-        padding: '1rem 1rem',
-        textAlign: 'center',
-        marginTop: '2rem',
-      }}
-    >
+    <footer style={footerStyle}>
       <div style={{ marginBottom: '0.5rem' }}>
         <a
-          href="https://facebook.com"
+          href="https://web.facebook.com/ColBogBike?_rdc=1&_rdr"
           target="_blank"
           rel="noopener noreferrer"
-          style={{ color: 'white', margin: '0 8px' }}
+          style={linkStyle}
         >
           Facebook
         </a>
         <a
-          href="https://twitter.com"
+          href="https://www.instagram.com/col_bog_bike/"
           target="_blank"
           rel="noopener noreferrer"
-          style={{ color: 'white', margin: '0 8px' }}
-        >
-          Twitter
-        </a>
-        <a
-          href="https://instagram.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ color: 'white', margin: '0 8px' }}
+          style={linkStyle}
         >
           Instagram
         </a>
+        <a
+          href="https://www.youtube.com/channel/UCVhvGo3YgZwKmLPcIL9gSlw"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={linkStyle}
+        >
+          YouTube
+        </a>
       </div>
-      <small>© 2025 BiciShop. Todos los derechos reservados.</small>
+      <small>© 2025 Col_Bog_Bike. Todos los derechos reservados.</small>
     </footer>
   );
+};
+
+const footerStyle = {
+  backgroundColor: '#222',
+  color: 'white',
+  padding: '1rem',
+  textAlign: 'center',
+  marginTop: 'auto', // empuja el footer al final
+};
+
+const linkStyle = {
+  color: 'white',
+  margin: '0 10px',
+  textDecoration: 'none',
 };
 
 export default Footer;
