@@ -1,13 +1,14 @@
-import React, { useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { CarritoContext } from '../context/CarritoContext';
 import { AuthContext } from '../context/AuthContext';
 
 const Header = () => {
+  const [menuAbierto, setMenuAbierto] = useState(false);
   const { carrito } = useContext(CarritoContext);
   const { usuario, logout } = useContext(AuthContext);
   const navigate = useNavigate();
- console.log('Usuario en Header:', usuario);
+
   const totalItems = carrito.reduce((acc, item) => acc + item.cantidad, 0);
 
   const handleLogout = () => {
@@ -16,65 +17,58 @@ const Header = () => {
   };
 
   return (
-    <header style={headerStyle}>
-      <Link to="/" style={{ textDecoration: 'none', color: 'white' }}>
-        <h1 style={{ fontSize: '1.5rem', margin: 0 }}>
-          🚴‍♂️ <strong>BiciShop</strong>
-        </h1>
-      </Link>
-        <nav>
-        <Link to="/" style={linkStyle}>Inicio</Link>
-        <Link to="/bicicletas" style={linkStyle}>Bicicletas</Link>
-        <Link to="/accesorios" style={linkStyle}>Accesorios</Link>
-        <Link to="/carrito" style={linkStyle}>Carrito 🛒 ({totalItems})</Link>
-        
-        {!usuario && (
-            <>
-            <Link to="/login" style={linkStyle}>Login</Link>
-            <Link to="/register" style={linkStyle}>Registrar</Link>
-            </>
-        )}
+    <header className="bg-blue-600 text-white sticky top-0 z-50 shadow-md">
+      <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+        <Link to="/" className="text-xl font-bold flex items-center gap-2">
+          🚴‍♂️ BiciShop
+        </Link>
 
-        {usuario && (
+        {/* Botón hamburguesa */}
+        <button
+          className="lg:hidden text-white text-2xl"
+          onClick={() => setMenuAbierto(!menuAbierto)}
+          aria-label="Abrir menú"
+        >
+          <i className="fas fa-bars"></i>
+        </button>
+
+        {/* Menú principal */}
+        <nav
+          className={`${
+            menuAbierto ? 'block' : 'hidden'
+          } lg:flex flex-col lg:flex-row absolute lg:static bg-blue-600 w-full left-0 top-full lg:w-auto lg:items-center gap-4 px-4 py-4 lg:py-0 lg:px-0`}
+        >
+          <Link to="/" className="hover:underline">Inicio</Link>
+          <Link to="/bicicletas" className="hover:underline">Bicicletas</Link>
+          <Link to="/accesorios" className="hover:underline">Accesorios</Link>
+          <Link to="/carrito" className="hover:underline">
+            Carrito 🛒 ({totalItems})
+          </Link>
+
+          {!usuario && (
             <>
-            {usuario.rol === 'admin' && (
-                <Link to="/admin" style={linkStyle}>Panel</Link>
-            )}
-            <button onClick={handleLogout} style={buttonStyle}>
-                Cerrar sesión
-            </button>
+              <Link to="/login" className="hover:underline">Login</Link>
+              <Link to="/register" className="hover:underline">Registrar</Link>
             </>
-        )}
+          )}
+
+          {usuario && (
+            <>
+              {usuario.rol === 'admin' && (
+                <Link to="/admin" className="hover:underline">Panel</Link>
+              )}
+              <button
+                onClick={handleLogout}
+                className="hover:underline text-left lg:text-inherit"
+              >
+                Cerrar sesión
+              </button>
+            </>
+          )}
         </nav>
+      </div>
     </header>
   );
-};
-
-const headerStyle = {
-  backgroundColor: '#0d6efd',
-  color: 'white',
-  padding: '0.75rem 1rem',
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  position: 'sticky',
-  top: 0,
-  zIndex: 100,
-};
-
-const linkStyle = {
-  color: 'white',
-  marginRight: '15px',
-  textDecoration: 'none',
-  fontWeight: '500',
-};
-
-const buttonStyle = {
-  background: 'none',
-  border: 'none',
-  color: 'white',
-  cursor: 'pointer',
-  fontWeight: '500',
 };
 
 export default Header;
