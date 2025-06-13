@@ -1,10 +1,9 @@
-import React, { useState, useContext } from 'react';
+import React, { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { CarritoContext } from '../context/CarritoContext';
 import { AuthContext } from '../context/AuthContext';
 
 const Header = () => {
-  const [menuAbierto, setMenuAbierto] = useState(false);
   const { carrito } = useContext(CarritoContext);
   const { usuario, logout } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -17,57 +16,84 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-blue-600 text-white sticky top-0 z-50 shadow-md">
-      <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-        <Link to="/" className="text-xl font-bold flex items-center gap-2">
-          🚴‍♂️ BiciShop
+    <nav className="navbar navbar-expand-lg navbar-dark bg-primary sticky-top shadow">
+      <div className="container">
+        <Link className="navbar-brand" to="/">
+          🚴‍♂️ <strong>BiciShop</strong>
         </Link>
 
         {/* Botón hamburguesa */}
         <button
-          className="lg:hidden text-white text-2xl"
-          onClick={() => setMenuAbierto(!menuAbierto)}
-          aria-label="Abrir menú"
+          className="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarContent"
+          aria-controls="navbarContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
         >
-          <i className="fas fa-bars"></i>
+          <span className="navbar-toggler-icon"></span>
         </button>
 
-        {/* Menú principal */}
-        <nav
-          className={`${
-            menuAbierto ? 'block' : 'hidden'
-          } lg:flex flex-col lg:flex-row absolute lg:static bg-blue-600 w-full left-0 top-full lg:w-auto lg:items-center gap-4 px-4 py-4 lg:py-0 lg:px-0`}
-        >
-          <Link to="/" className="hover:underline">Inicio</Link>
-          <Link to="/bicicletas" className="hover:underline">Bicicletas</Link>
-          <Link to="/accesorios" className="hover:underline">Accesorios</Link>
-          <Link to="/carrito" className="hover:underline">
-            Carrito 🛒 ({totalItems})
-          </Link>
+        {/* Menú colapsable */}
+        <div className="collapse navbar-collapse" id="navbarContent">
+          <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
+            <li className="nav-item">
+              <Link to="/" className="nav-link">
+                Inicio
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link to="/bicicletas" className="nav-link">
+                Bicicletas
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link to="/accesorios" className="nav-link">
+                Accesorios
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link to="/carrito" className="nav-link">
+                Carrito 🛒 ({totalItems})
+              </Link>
+            </li>
 
-          {!usuario && (
-            <>
-              <Link to="/login" className="hover:underline">Login</Link>
-              <Link to="/register" className="hover:underline">Registrar</Link>
-            </>
-          )}
+            {!usuario && (
+              <>
+                <li className="nav-item">
+                  <Link to="/login" className="nav-link">
+                    Login
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link to="/register" className="nav-link">
+                    Registrar
+                  </Link>
+                </li>
+              </>
+            )}
 
-          {usuario && (
-            <>
-              {usuario.rol === 'admin' && (
-                <Link to="/admin" className="hover:underline">Panel</Link>
-              )}
-              <button
-                onClick={handleLogout}
-                className="hover:underline text-left lg:text-inherit"
-              >
-                Cerrar sesión
-              </button>
-            </>
-          )}
-        </nav>
+            {usuario && (
+              <>
+                {usuario.rol === 'admin' && (
+                  <li className="nav-item">
+                    <Link to="/admin" className="nav-link">
+                      Panel
+                    </Link>
+                  </li>
+                )}
+                <li className="nav-item">
+                  <button className="nav-link btn btn-link text-white" onClick={handleLogout}>
+                    Cerrar sesión
+                  </button>
+                </li>
+              </>
+            )}
+          </ul>
+        </div>
       </div>
-    </header>
+    </nav>
   );
 };
 
