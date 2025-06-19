@@ -17,10 +17,15 @@ export const AuthProvider = ({ children }) => {
   }, [usuario]);
 
   // ✅ login ahora guarda TODO el usuario (incluyendo _id, nombre, token, rol, etc.)
-  const login = (user) => {
-    setUsuario(user);
-    console.log('✅ Usuario logueado:', user); // 👀 Verificación
+const login = (user) => {
+  const usuarioConId = {
+    ...user,
+    _id: user._id || user.id // 🔁 asegura que siempre exista _id
   };
+
+  setUsuario(usuarioConId);
+  console.log('✅ Usuario logueado:', usuarioConId);
+};
 
   const logout = () => {
     setUsuario(null);
