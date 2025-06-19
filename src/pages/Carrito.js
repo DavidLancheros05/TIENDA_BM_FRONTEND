@@ -3,6 +3,9 @@ import { CarritoContext } from '../context/CarritoContext';
 import { AuthContext } from '../context/AuthContext';
 import axios from 'axios';
 
+const BASE_FRONTEND_URL = window.location.origin;
+console.log("daviddddd",BASE_FRONTEND_URL);
+
 const Carrito = () => {
   const { carrito, eliminarDelCarrito, limpiarCarrito } = useContext(CarritoContext);
   const { usuario } = useContext(AuthContext);
@@ -26,8 +29,7 @@ if (!usuarioId) {
       return;
     }
 
-const BASE_FRONTEND_URL = window.location.origin;
-console.log("daviddddd",BASE_FRONTEND_URL);
+
 const ventaYLink = {
   usuarioId,
   productos: carrito.map(item => ({
