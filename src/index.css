@@ -27,3 +27,8 @@ body {
   display: flex;
   flex-direction: column;
 }
+
+/* Asegura que el layout de toda la app ocupe 100% de altura */
+html, body, #root {
+  height: 100%;
+}

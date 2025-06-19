@@ -13,23 +13,26 @@ export default function Login() {
   const API_URL = process.env.REACT_APP_API_URL;
 
   const handleSubmit = async e => {
-    e.preventDefault();
-    try {
-      const res = await axios.post(`${API_URL}/api/auth/login`, { correo, password });
-      const { token, user } = res.data;
-      const rol = user.rol;
+  e.preventDefault();
+  try {
+    const res = await axios.post(`${API_URL}/api/auth/login`, { correo, password });
+    const { token, user } = res.data;
 
-      login(token, rol);
+    const usuario = { ...user, token };
 
-      if (rol === 'admin') {
-        navigate('/adminDashboard');
-      } else {
-        navigate('/');
-      }
-    } catch (err) {
-      setError(err.response?.data?.msg || 'Error en login');
+    console.log("✅ Usuario logueado con éxito:", usuario); // 👀 Ahora mostrará _id
+
+    login(usuario);
+
+    if (usuario.rol === 'admin') {
+      navigate('/adminDashboard');
+    } else {
+      navigate('/');
     }
-  };
+  } catch (err) {
+    setError(err.response?.data?.msg || 'Error en login');
+  }
+};
 
   return (
     <div className="container d-flex justify-content-center align-items-center vh-100">

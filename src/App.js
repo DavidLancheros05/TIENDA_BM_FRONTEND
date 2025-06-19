@@ -15,6 +15,9 @@ import LoginAdmin from './pages/Login';
 import AdminProductos from './pages/AdminProductos';
 import ProductoDetalle from './pages/ProductoDetalle';
 import ListadoProductos from './components/ListadoProductos';
+import PagoPSE from './pages/PagoPSE';
+import PagoExitoso from './pages/PagoExitoso';
+import PagoCancelado from './pages/PagoCancelado';
 
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
@@ -23,8 +26,11 @@ function App() {
     <AuthProvider>
       <CarritoProvider>
         <BrowserRouter>
-          <div className="flex flex-col min-h-screen bg-gray-50">
+          {/* Layout principal con altura completa y columnas */}
+          <div className="flex flex-col min-h-screen">
             <Header />
+
+            {/* Main crece y empuja el footer */}
             <main className="flex-grow px-4 py-6 container mx-auto">
               <Routes>
                 <Route path="/" element={<Inicio />} />
@@ -37,8 +43,14 @@ function App() {
                 <Route path="/accesorios" element={<ListadoProductos tipo="accesorios" />} />
                 <Route path="/producto/:id" element={<ProductoDetalle />} />
                 <Route path="/register" element={<Register />} />
+
+                <Route path="/pse" element={<PagoPSE />} />
+                <Route path="/pago-exitoso/*" element={<PagoExitoso />} />
+                <Route path="/pago-cancelado/*" element={<PagoCancelado />} />
               </Routes>
             </main>
+
+            {/* Footer siempre abajo */}
             <Footer />
           </div>
         </BrowserRouter>

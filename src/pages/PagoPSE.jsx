@@ -1,60 +1,39 @@
 import React, { useContext } from 'react';
 import { CarritoContext } from '../context/CarritoContext';
-import { AuthContext } from '../context/AuthContext';
 import axios from 'axios';
 
 const Carrito = () => {
   const { carrito, eliminarDelCarrito, limpiarCarrito } = useContext(CarritoContext);
-  const { usuario } = useContext(AuthContext);
 
   const total = carrito.reduce((acc, item) => acc + item.precio * item.cantidad, 0);
 
-const pagarConWompi = async () => {
-  console.log("👤 Usuario actual:", usuario); // ✅ Verifica que ahora tenga ._id
-
-  if (!usuario || !usuario._id) {
-    console.error("⚠️ Usuario no logueado.");
-    alert("Debes iniciar sesión para pagar.");
-    return;
-  }
-
-    if (!carrito || carrito.length === 0) {
-      console.error("⚠️ Carrito vacío.");
-      alert("Tu carrito está vacío.");
-      return;
-    }
-
-  const ventaYLink = {
-    usuarioId: usuario._id, // ✅ ya no habrá problema aquí
-    productos: carrito.map(item => ({
-      producto: item._id,
-      cantidad: item.cantidad
-    })),
-      total,
-      metodoPago: "PSE",
-      name: "Compra en Col_Bog_Bike",
-      description: "Pago con PSE (sandbox)",
+  const crearLinkPago = async () => {
+    const totalEnCentavos = Math.round(total * 100); // Wompi requiere valor en centavos
+    const datosPago = {
+      name: "Pago de compra en Col_Bog_Bike",
+      description: "Compra de productos",
+      single_use: true,
+      collect_shipping: false,
       currency: "COP",
-      amount_in_cents: total * 100,
+      amount_in_cents: totalEnCentavos,
       redirect_url: "http://localhost:3000/pago-exitoso",
       cancel_url: "http://localhost:3000/pago-cancelado",
     };
 
-    console.log("📤 Enviando datos para crear link y registrar venta:", ventaYLink);
+    console.log("📦 Payload enviado:\n", datosPago);
 
     try {
-      const response = await axios.post("http://localhost:5000/api/pagos/crear-link-pago", ventaYLink);
-      const link = response.data?.link_pago;
-      console.log("🔗 Redirigiendo a:", link);
-      if (link) {
-        limpiarCarrito();
-        window.location.href = link;
+      console.log("🚀 Enviando solicitud a Wompi...");
+      const response = await axios.post('http://localhost:5000/api/pagos/crear-link-pago', datosPago);
+
+      console.log("✅ Respuesta del backend:", response.data);
+      if (response.data && response.data.link_pago) {
+        window.location.href = response.data.link_pago;
       } else {
-        alert("No se pudo obtener el link de pago.");
+        console.error("⚠️ No se recibió URL de pago válida.");
       }
     } catch (error) {
       console.error("❌ Error creando link de pago:", error.response?.data || error.message);
-      alert("Ocurrió un error al crear el link de pago.");
     }
   };
 
@@ -76,7 +55,7 @@ const pagarConWompi = async () => {
                 </div>
                 <div>
                   <span className="fw-bold">${(item.precio * item.cantidad).toFixed(2)}</span>
-                  <button 
+                  <button
                     className="btn btn-sm btn-danger ms-3"
                     onClick={() => eliminarDelCarrito(item._id)}
                   >
@@ -87,17 +66,18 @@ const pagarConWompi = async () => {
             ))}
           </ul>
 
-          <div className="d-flex justify-content-between align-items-center">
+          <div className="d-flex justify-content-between align-items-center mb-3">
             <h4>Total: ${total.toFixed(2)}</h4>
             <button className="btn btn-outline-danger" onClick={limpiarCarrito}>
               Vaciar Carrito
             </button>
           </div>
 
-          <div className="text-center mt-4">
+          {/* ✅ Botón para pagar con Wompi */}
+          <div className="text-center">
             <button
+              onClick={crearLinkPago}
               className="btn btn-success px-4 py-2"
-              onClick={pagarConWompi}
             >
               💳 Pagar con PSE
             </button>

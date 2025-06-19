@@ -14,7 +14,7 @@ const Inicio = () => {
       </p>
 
       <div className="my-5">
-        <Link to="/productos" className="btn btn-primary btn-lg">
+        <Link to="/bicicletas" className="btn btn-primary btn-lg">
           Explorar productos
         </Link>
       </div>
