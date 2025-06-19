@@ -7,13 +7,26 @@ import { CarritoContext } from '../context/CarritoContext';
 const ListadoProductos = ({ tipo }) => {
   const [productos, setProductos] = useState([]);
   const [filtro, setFiltro] = useState('');
+  const [loading, setLoading] = useState(true); // 🆕 estado de carga
+  const [error, setError] = useState(null); // 🆕 manejo de error
+
   const { agregarAlCarrito } = useContext(CarritoContext);
 
   useEffect(() => {
-    axios
-      .get(`${process.env.REACT_APP_API_URL}/api/productos?tipoProducto=${tipo}`)
-      .then(res => setProductos(res.data))
-      .catch(err => console.error(`Error al obtener ${tipo}s:`, err));
+    const fetchProductos = async () => {
+      setLoading(true);
+      try {
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/productos?tipoProducto=${tipo}`);
+        setProductos(res.data);
+      } catch (err) {
+        console.error(`❌ Error al obtener ${tipo}s:`, err);
+        setError('No se pudieron cargar los productos.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProductos();
   }, [tipo]);
 
   const productosFiltrados = filtro
@@ -37,9 +50,15 @@ const ListadoProductos = ({ tipo }) => {
         onChange={e => setFiltro(e.target.value)}
       />
 
-      <div className="row">
-        {productosFiltrados.length > 0 ? (
-          productosFiltrados.map(producto => (
+      {loading ? (
+        <p className="text-center">⏳ Cargando productos...</p>
+      ) : error ? (
+        <p className="text-center text-danger">{error}</p>
+      ) : productosFiltrados.length === 0 ? (
+        <p className="text-center">No se encontraron productos que coincidan con el filtro.</p>
+      ) : (
+        <div className="row">
+          {productosFiltrados.map(producto => (
             <div className="col-md-3 mb-4" key={producto._id}>
               <div className="card h-100 shadow-sm d-flex flex-column">
                 <Link
@@ -70,11 +89,9 @@ const ListadoProductos = ({ tipo }) => {
                 </div>
               </div>
             </div>
-          ))
-        ) : (
-          <p className="text-center">No se encontraron productos que coincidan con el filtro.</p>
-        )}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
