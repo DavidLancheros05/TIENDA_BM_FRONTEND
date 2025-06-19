@@ -10,6 +10,9 @@ const PagoExitoso = () => {
   const [mensaje, setMensaje] = useState('');
   const [total, setTotal] = useState(0);
 
+  // ✅ Tomamos la URL del backend desde el .env o Render
+  const API_URL = process.env.REACT_APP_API_URL;
+
   useEffect(() => {
     console.log("🟢 Componente PagoExitoso montado");
 
@@ -29,7 +32,7 @@ const PagoExitoso = () => {
       try {
         console.log("📤 Enviando confirmación de venta con ID:", ventaIdFromURL);
 
-        const respuesta = await axios.post("http://localhost:5000/api/pagos/confirmar-venta", {
+        const respuesta = await axios.post(`${API_URL}/api/pagos/confirmar-venta`, {
           ventaId: ventaIdFromURL,
         });
 
@@ -37,7 +40,7 @@ const PagoExitoso = () => {
         setMensaje(respuesta.data.mensaje || "Venta confirmada con éxito");
 
         // 🧾 Obtener detalles de la venta para mostrar resumen
-        const { data } = await axios.get(`http://localhost:5000/api/pagos/detalle-venta/${ventaIdFromURL}`);
+        const { data } = await axios.get(`${API_URL}/api/pagos/detalle-venta/${ventaIdFromURL}`);
         setTotal(data.total);
 
       } catch (error) {
@@ -47,7 +50,7 @@ const PagoExitoso = () => {
     };
 
     confirmarVenta();
-  }, [location.search]);
+  }, [location.search, API_URL]);
 
   return (
     <div className="text-center mt-5">

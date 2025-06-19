@@ -9,6 +9,10 @@ const Carrito = () => {
 
   const crearLinkPago = async () => {
     const totalEnCentavos = Math.round(total * 100); // Wompi requiere valor en centavos
+
+    const BASE_FRONTEND_URL = window.location.origin;
+    const API_URL = process.env.REACT_APP_API_URL;
+
     const datosPago = {
       name: "Pago de compra en Col_Bog_Bike",
       description: "Compra de productos",
@@ -16,24 +20,26 @@ const Carrito = () => {
       collect_shipping: false,
       currency: "COP",
       amount_in_cents: totalEnCentavos,
-      redirect_url: "http://localhost:3000/pago-exitoso",
-      cancel_url: "http://localhost:3000/pago-cancelado",
+      redirect_url: `${BASE_FRONTEND_URL}/pago-exitoso`,
+      cancel_url: `${BASE_FRONTEND_URL}/pago-cancelado`,
     };
 
     console.log("📦 Payload enviado:\n", datosPago);
 
     try {
-      console.log("🚀 Enviando solicitud a Wompi...");
-      const response = await axios.post('http://localhost:5000/api/pagos/crear-link-pago', datosPago);
+      console.log("🚀 Enviando solicitud a backend:", `${API_URL}/api/pagos/crear-link-pago`);
+      const response = await axios.post(`${API_URL}/api/pagos/crear-link-pago`, datosPago);
 
       console.log("✅ Respuesta del backend:", response.data);
       if (response.data && response.data.link_pago) {
         window.location.href = response.data.link_pago;
       } else {
         console.error("⚠️ No se recibió URL de pago válida.");
+        alert("No se pudo generar el link de pago.");
       }
     } catch (error) {
       console.error("❌ Error creando link de pago:", error.response?.data || error.message);
+      alert("Ocurrió un error al crear el link de pago.");
     }
   };
 
