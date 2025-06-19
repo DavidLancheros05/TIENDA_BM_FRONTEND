@@ -27,7 +27,7 @@ if (!usuarioId) {
     }
 
 const BASE_FRONTEND_URL = window.location.origin;
-
+console.log("daviddddd",BASE_FRONTEND_URL);
 const ventaYLink = {
   usuarioId,
   productos: carrito.map(item => ({
