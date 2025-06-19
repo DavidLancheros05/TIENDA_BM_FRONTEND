@@ -12,11 +12,13 @@ const Carrito = () => {
 const pagarConWompi = async () => {
   console.log("👤 Usuario actual:", usuario); // ✅ Verifica que ahora tenga ._id
 
-  if (!usuario || !usuario._id) {
-    console.error("⚠️ Usuario no logueado.");
-    alert("Debes iniciar sesión para pagar.");
-    return;
-  }
+const usuarioId = usuario?._id || usuario?.id;
+
+if (!usuarioId) {
+  console.error("⚠️ Usuario no logueado.");
+  alert("Debes iniciar sesión para pagar.");
+  return;
+}
 
     if (!carrito || carrito.length === 0) {
       console.error("⚠️ Carrito vacío.");
@@ -24,21 +26,21 @@ const pagarConWompi = async () => {
       return;
     }
 
-  const ventaYLink = {
-    usuarioId: usuario._id, // ✅ ya no habrá problema aquí
-    productos: carrito.map(item => ({
-      producto: item._id,
-      cantidad: item.cantidad
-    })),
-      total,
-      metodoPago: "PSE",
-      name: "Compra en Col_Bog_Bike",
-      description: "Pago con PSE (sandbox)",
-      currency: "COP",
-      amount_in_cents: total * 100,
-      redirect_url: "http://localhost:3000/pago-exitoso",
-      cancel_url: "http://localhost:3000/pago-cancelado",
-    };
+const ventaYLink = {
+  usuarioId, // ✅ Usa el que definiste arriba
+  productos: carrito.map(item => ({
+    producto: item._id,
+    cantidad: item.cantidad
+  })),
+  total,
+  metodoPago: "PSE",
+  name: "Compra en Col_Bog_Bike",
+  description: "Pago con PSE (sandbox)",
+  currency: "COP",
+  amount_in_cents: total * 100,
+  redirect_url: "http://localhost:3000/pago-exitoso",
+  cancel_url: "http://localhost:3000/pago-cancelado",
+};
 
     console.log("📤 Enviando datos para crear link y registrar venta:", ventaYLink);
 
