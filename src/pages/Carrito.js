@@ -26,8 +26,10 @@ if (!usuarioId) {
       return;
     }
 
+const BASE_FRONTEND_URL = window.location.origin;
+
 const ventaYLink = {
-  usuarioId, // ✅ Usa el que definiste arriba
+  usuarioId,
   productos: carrito.map(item => ({
     producto: item._id,
     cantidad: item.cantidad
@@ -38,8 +40,8 @@ const ventaYLink = {
   description: "Pago con PSE (sandbox)",
   currency: "COP",
   amount_in_cents: total * 100,
-  redirect_url: "http://localhost:3000/pago-exitoso",
-  cancel_url: "http://localhost:3000/pago-cancelado",
+  redirect_url: `${BASE_FRONTEND_URL}/pago-exitoso`,
+  cancel_url: `${BASE_FRONTEND_URL}/pago-cancelado`,
 };
 
     console.log("📤 Enviando datos para crear link y registrar venta:", ventaYLink);
