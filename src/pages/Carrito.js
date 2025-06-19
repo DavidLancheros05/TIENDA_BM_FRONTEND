@@ -43,9 +43,11 @@ const ventaYLink = {
 };
 
     console.log("📤 Enviando datos para crear link y registrar venta:", ventaYLink);
-
+    console.log("🌐 API_URL:", process.env.REACT_APP_API_URL);
     try {
-      const response = await axios.post("http://localhost:5000/api/pagos/crear-link-pago", ventaYLink);
+      const API_URL = process.env.REACT_APP_API_URL;
+
+      const response = await axios.post(`${API_URL}/api/pagos/crear-link-pago`, ventaYLink);
       const link = response.data?.link_pago;
       console.log("🔗 Redirigiendo a:", link);
       if (link) {
