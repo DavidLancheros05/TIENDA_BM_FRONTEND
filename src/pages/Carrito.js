@@ -43,6 +43,7 @@ const ventaYLink = {
 };
 
     console.log("📤 Enviando datos para crear link y registrar venta:", ventaYLink);
+    console.log("🌐 sss");
     console.log("🌐 API_URL:", process.env.REACT_APP_API_URL);
     try {
       const API_URL = process.env.REACT_APP_API_URL;
