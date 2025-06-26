@@ -1,7 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-import { CarritoProvider } from './context/CarritoContext';
 import { AuthProvider } from './context/AuthContext';
 
 import Header from './components/Header';
@@ -32,7 +31,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 function App() {
   return (
     <AuthProvider>
-      <CarritoProvider>
+     
         <BrowserRouter>
           <div className="flex flex-col min-h-screen">
             <Header />
@@ -65,7 +64,7 @@ function App() {
             <Footer />
           </div>
         </BrowserRouter>
-      </CarritoProvider>
+     
     </AuthProvider>
   );
 }
