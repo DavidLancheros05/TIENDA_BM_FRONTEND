@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
-import { CarritoContext } from '../context/CarritoContext';
-import { AuthContext } from '../context/AuthContext';
+import { CarritoContext } from '../../context/CarritoContext';
+import { AuthContext } from '../../context/AuthContext';
 import axios from 'axios';
 
 const BASE_FRONTEND_URL = window.location.origin;
