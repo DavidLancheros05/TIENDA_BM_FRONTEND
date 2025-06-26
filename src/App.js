@@ -1,8 +1,8 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-import { CarritoProvider } from '../../context/CarritoContext';
-import { AuthProvider } from '../../context/AuthContext';
+import { CarritoProvider } from './context/CarritoContext';
+import { AuthProvider } from './context/AuthContext';
 
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -12,7 +12,7 @@ import Inicio from './pages/cliente/Inicio';
 import Carrito from './pages/cliente/Carrito';
 import Productos from './pages/cliente/productos/Productos';
 import ProductoDetalle from './pages/cliente/productos/ProductoDetalle';
-import ListadoProductos from './components/ListadoProductos'; // Este sigue igual
+import ListadoProductos from './components/ListadoProductos';
 
 // Páginas de Pago
 import PagoPSE from './pages/cliente/pagos/PagoPSE';
