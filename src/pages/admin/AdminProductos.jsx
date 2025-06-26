@@ -1,24 +1,22 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
+const initialForm = {
+  nombre: "",
+  descripcion: "",
+  precio: 0,
+  categoria: "",
+  tipoProducto: "",
+  imagenDestacada: "",
+  marca: "",
+  colores: [],
+  tallas: [],
+};
+
 const AdminProductos = () => {
   const [productos, setProductos] = useState([]);
-  const [formulario, setFormulario] = useState({
-    nombre: "",
-    descripcion: "",
-    precio: "",
-    precioOriginal: "",
-    categoria: "",
-    tipoProducto: "",
-    imagenDestacada: "",
-    imagenes: "",
-    marca: "",
-    colores: "",
-    tallas: "",
-    variantes: "",
-  });
-  const [modoEdicion, setModoEdicion] = useState(false);
-  const [idEditando, setIdEditando] = useState(null);
+  const [formData, setFormData] = useState(initialForm);
+  const [editandoId, setEditandoId] = useState(null);
 
   useEffect(() => {
     obtenerProductos();
@@ -29,12 +27,9 @@ const AdminProductos = () => {
       const res = await axios.get("https://tienda-bm-backend-1.onrender.com/api/productos");
       if (Array.isArray(res.data)) {
         setProductos(res.data);
-      } else {
-        console.warn("⚠️ La API no devolvió un array.");
-        setProductos([]);
       }
-    } catch (error) {
-      console.error("❌ Error al obtener productos:", error);
+    } catch (err) {
+      console.error("❌ Error al obtener productos:", err);
     }
   };
 
@@ -42,101 +37,75 @@ const AdminProductos = () => {
     try {
       await axios.delete(`https://tienda-bm-backend-1.onrender.com/api/productos/${id}`);
       obtenerProductos();
-    } catch (error) {
-      console.error("❌ Error al eliminar producto:", error);
+    } catch (err) {
+      console.error("❌ Error al eliminar:", err);
     }
   };
 
-  const cargarProducto = (producto) => {
-    setFormulario({
-      nombre: producto.nombre || "",
-      descripcion: producto.descripcion || "",
-      precio: producto.precio || "",
-      precioOriginal: producto.precioOriginal || "",
-      categoria: producto.categoria || "",
-      tipoProducto: producto.tipoProducto || "",
-      imagenDestacada: producto.imagenDestacada || "",
-      imagenes: (producto.imagenes || []).join(", "),
-      marca: producto.marca || "",
-      colores: (producto.colores || []).join(", "),
-      tallas: (producto.tallas || []).join(", "),
-      variantes: JSON.stringify(producto.variantes || []),
-    });
-    setModoEdicion(true);
-    setIdEditando(producto._id);
-  };
-
-  const handleInputChange = (e) => {
+  const manejarCambio = (e) => {
     const { name, value } = e.target;
-    setFormulario({ ...formulario, [name]: value });
+
+    if (["colores", "tallas"].includes(name)) {
+      setFormData({ ...formData, [name]: value.split(",").map((v) => v.trim()) });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
   };
 
   const manejarSubmit = async (e) => {
     e.preventDefault();
 
-    const datos = {
-      ...formulario,
-      precio: Number(formulario.precio),
-      precioOriginal: Number(formulario.precioOriginal),
-      imagenes: formulario.imagenes.split(",").map((img) => img.trim()),
-      colores: formulario.colores.split(",").map((c) => c.trim()),
-      tallas: formulario.tallas.split(",").map((t) => t.trim()),
-      variantes: JSON.parse(formulario.variantes || "[]"),
-    };
-
     try {
-      if (modoEdicion) {
-        await axios.put(`https://tienda-bm-backend-1.onrender.com/api/productos/${idEditando}`, datos);
-        setModoEdicion(false);
-        setIdEditando(null);
+      if (editandoId) {
+        await axios.put(`https://tienda-bm-backend-1.onrender.com/api/productos/${editandoId}`, formData);
       } else {
-        await axios.post("https://tienda-bm-backend-1.onrender.com/api/productos", datos);
+        await axios.post(`https://tienda-bm-backend-1.onrender.com/api/productos`, formData);
       }
 
-      setFormulario({
-        nombre: "",
-        descripcion: "",
-        precio: "",
-        precioOriginal: "",
-        categoria: "",
-        tipoProducto: "",
-        imagenDestacada: "",
-        imagenes: "",
-        marca: "",
-        colores: "",
-        tallas: "",
-        variantes: "",
-      });
+      setFormData(initialForm);
+      setEditandoId(null);
       obtenerProductos();
     } catch (err) {
-      console.error("❌ Error guardando producto:", err);
+      console.error("❌ Error al guardar:", err);
     }
+  };
+
+  const cargarEdicion = (producto) => {
+    setFormData({
+      nombre: producto.nombre,
+      descripcion: producto.descripcion,
+      precio: producto.precio,
+      categoria: producto.categoria,
+      tipoProducto: producto.tipoProducto,
+      imagenDestacada: producto.imagenDestacada || "",
+      marca: producto.marca || "",
+      colores: producto.colores || [],
+      tallas: producto.tallas || [],
+    });
+    setEditandoId(producto._id);
   };
 
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-4">Administrar Productos</h1>
 
-      <form onSubmit={manejarSubmit} className="mb-6 space-y-2 bg-gray-100 p-4 rounded">
-        {Object.keys(formulario).map((campo) => (
-          <input
-            key={campo}
-            type="text"
-            name={campo}
-            value={formulario[campo]}
-            onChange={handleInputChange}
-            placeholder={campo}
-            className="w-full p-2 border rounded"
-          />
-        ))}
-        <button
-          type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-        >
-          {modoEdicion ? "Guardar Cambios" : "Agregar Producto"}
+      {/* 🟩 Formulario */}
+      <form onSubmit={manejarSubmit} className="bg-white shadow p-4 mb-6 rounded grid grid-cols-1 md:grid-cols-2 gap-4">
+        <input type="text" name="nombre" placeholder="Nombre" value={formData.nombre} onChange={manejarCambio} className="p-2 border rounded" required />
+        <input type="number" name="precio" placeholder="Precio" value={formData.precio} onChange={manejarCambio} className="p-2 border rounded" required />
+        <input type="text" name="categoria" placeholder="Categoría" value={formData.categoria} onChange={manejarCambio} className="p-2 border rounded" />
+        <input type="text" name="tipoProducto" placeholder="Tipo" value={formData.tipoProducto} onChange={manejarCambio} className="p-2 border rounded" />
+        <input type="text" name="imagenDestacada" placeholder="URL Imagen" value={formData.imagenDestacada} onChange={manejarCambio} className="p-2 border rounded" />
+        <input type="text" name="marca" placeholder="Marca" value={formData.marca} onChange={manejarCambio} className="p-2 border rounded" />
+        <input type="text" name="colores" placeholder="Colores (rojo, azul)" value={formData.colores.join(", ")} onChange={manejarCambio} className="p-2 border rounded" />
+        <input type="text" name="tallas" placeholder="Tallas (S, M, L)" value={formData.tallas.join(", ")} onChange={manejarCambio} className="p-2 border rounded" />
+        <textarea name="descripcion" placeholder="Descripción" value={formData.descripcion} onChange={manejarCambio} className="p-2 border rounded col-span-full" rows="3" />
+        <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded col-span-full">
+          {editandoId ? "Guardar Cambios" : "Agregar Producto"}
         </button>
       </form>
 
+      {/* 🟥 Tabla */}
       <table className="min-w-full bg-white rounded shadow">
         <thead>
           <tr className="text-left border-b">
@@ -148,12 +117,12 @@ const AdminProductos = () => {
         <tbody>
           {productos.length > 0 ? (
             productos.map((producto) => (
-              <tr key={producto._id} className="border-b hover:bg-gray-100">
+              <tr key={producto._id} className="border-b hover:bg-gray-50">
                 <td className="p-2">{producto.nombre}</td>
                 <td className="p-2">${producto.precio.toLocaleString("es-CO")}</td>
                 <td className="p-2 space-x-2">
                   <button
-                    onClick={() => cargarProducto(producto)}
+                    onClick={() => cargarEdicion(producto)}
                     className="bg-yellow-500 text-white px-2 py-1 rounded"
                   >
                     Editar
@@ -170,7 +139,7 @@ const AdminProductos = () => {
           ) : (
             <tr>
               <td className="p-4 text-center" colSpan="3">
-                No hay productos para mostrar.
+                No hay productos.
               </td>
             </tr>
           )}
