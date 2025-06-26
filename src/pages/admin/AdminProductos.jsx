@@ -19,6 +19,7 @@ const AdminProductos = () => {
   const [editandoId, setEditandoId] = useState(null);
 
   useEffect(() => {
+    console.log("🟢 Renderizando AdminProductos");
     obtenerProductos();
   }, []);
 
@@ -44,7 +45,6 @@ const AdminProductos = () => {
 
   const manejarCambio = (e) => {
     const { name, value } = e.target;
-
     if (["colores", "tallas"].includes(name)) {
       setFormData({ ...formData, [name]: value.split(",").map((v) => v.trim()) });
     } else {
@@ -59,7 +59,7 @@ const AdminProductos = () => {
       if (editandoId) {
         await axios.put(`https://tienda-bm-backend-1.onrender.com/api/productos/${editandoId}`, formData);
       } else {
-        await axios.post(`https://tienda-bm-backend-1.onrender.com/api/productos`, formData);
+        await axios.post("https://tienda-bm-backend-1.onrender.com/api/productos", formData);
       }
 
       setFormData(initialForm);
@@ -72,25 +72,37 @@ const AdminProductos = () => {
 
   const cargarEdicion = (producto) => {
     setFormData({
-      nombre: producto.nombre,
-      descripcion: producto.descripcion,
-      precio: producto.precio,
-      categoria: producto.categoria,
-      tipoProducto: producto.tipoProducto,
+      nombre: producto.nombre || "",
+      descripcion: producto.descripcion || "",
+      precio: producto.precio || 0,
+      categoria: producto.categoria || "",
+      tipoProducto: producto.tipoProducto || "",
       imagenDestacada: producto.imagenDestacada || "",
       marca: producto.marca || "",
       colores: producto.colores || [],
       tallas: producto.tallas || [],
     });
     setEditandoId(producto._id);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-4">Administrar Productos</h1>
 
+      {/* 🔼 Ir arriba */}
+      <button
+        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        className="mb-4 text-sm text-blue-600 underline"
+      >
+        ⬆ Ir al formulario de nuevo producto
+      </button>
+
       {/* 🟩 Formulario */}
-      <form onSubmit={manejarSubmit} className="bg-white shadow p-4 mb-6 rounded grid grid-cols-1 md:grid-cols-2 gap-4">
+      <form
+        onSubmit={manejarSubmit}
+        className="bg-yellow-100 border border-yellow-300 shadow p-4 mb-6 rounded grid grid-cols-1 md:grid-cols-2 gap-4"
+      >
         <input type="text" name="nombre" placeholder="Nombre" value={formData.nombre} onChange={manejarCambio} className="p-2 border rounded" required />
         <input type="number" name="precio" placeholder="Precio" value={formData.precio} onChange={manejarCambio} className="p-2 border rounded" required />
         <input type="text" name="categoria" placeholder="Categoría" value={formData.categoria} onChange={manejarCambio} className="p-2 border rounded" />
@@ -101,14 +113,14 @@ const AdminProductos = () => {
         <input type="text" name="tallas" placeholder="Tallas (S, M, L)" value={formData.tallas.join(", ")} onChange={manejarCambio} className="p-2 border rounded" />
         <textarea name="descripcion" placeholder="Descripción" value={formData.descripcion} onChange={manejarCambio} className="p-2 border rounded col-span-full" rows="3" />
         <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded col-span-full">
-          {editandoId ? "Guardar Cambios" : "Agregar Producto"}
+          {editandoId ? "Guardar Cambios" : "➕ Agregar Producto"}
         </button>
       </form>
 
       {/* 🟥 Tabla */}
       <table className="min-w-full bg-white rounded shadow">
         <thead>
-          <tr className="text-left border-b">
+          <tr className="text-left border-b bg-gray-100">
             <th className="p-2">Nombre</th>
             <th className="p-2">Precio</th>
             <th className="p-2">Acciones</th>
@@ -138,9 +150,7 @@ const AdminProductos = () => {
             ))
           ) : (
             <tr>
-              <td className="p-4 text-center" colSpan="3">
-                No hay productos.
-              </td>
+              <td colSpan="3" className="p-4 text-center">No hay productos.</td>
             </tr>
           )}
         </tbody>
