@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
-import { CarritoContext } from '../../context/CarritoContext';
-import { AuthContext } from '../../context/AuthContext';
+import { CarritoContext } from '../../../context/CarritoContext';
+import { AuthContext } from '../../../context/AuthContext';
 import { Link } from 'react-router-dom';
 // Después (funciona con Create React App)
 console.log('API URL:', process.env.REACT_APP_API_URL);

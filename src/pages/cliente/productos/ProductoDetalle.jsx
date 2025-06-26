@@ -3,7 +3,8 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { CarritoContext } from '../context/CarritoContext';
+import { CarritoContext } from '../../../context/CarritoContext';
+
 
 const ProductoDetalle = () => {
   const { id } = useParams();
