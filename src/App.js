@@ -8,7 +8,6 @@ import Footer from './components/Footer';
 
 // Páginas Cliente
 import Inicio from './pages/cliente/Inicio';
-import Carrito from './pages/cliente/Carrito';
 import Productos from './pages/cliente/productos/Productos';
 import ProductoDetalle from './pages/cliente/productos/ProductoDetalle';
 import ListadoProductos from './components/ListadoProductos';
@@ -42,7 +41,7 @@ function App() {
                 <Route path="/" element={<Inicio />} />
                 <Route path="/productos" element={<Productos />} />
                 <Route path="/producto/:id" element={<ProductoDetalle />} />
-                <Route path="/carrito" element={<Carrito />} />
+                
                 <Route path="/bicicletas" element={<ListadoProductos tipo="bicicleta" />} />
                 <Route path="/accesorios" element={<ListadoProductos tipo="accesorios" />} />
 
