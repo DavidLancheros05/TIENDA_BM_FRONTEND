@@ -86,7 +86,7 @@ const AdminProductos = () => {
 
   return (
     <div className="p-6">
-      <h1 className="text-3xl font-bold mb-6 text-center">Administrar Productos</h1>
+      <h1 className="text-3xl font-bold mb-6 text-center">Administrar david Productos</h1>
 
       {/* Formulario de creación/edición */}
       <form onSubmit={manejarSubmit} className="bg-white shadow p-6 rounded mb-8 grid grid-cols-1 md:grid-cols-2 gap-4">
