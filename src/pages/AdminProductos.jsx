@@ -12,17 +12,15 @@ const AdminProductos = () => {
     try {
       const res = await axios.get("https://tienda-bm-backend-1.onrender.com/api/productos");
 
-      console.log("📦 Respuesta del backend:", res.data);
+      // 🟡 DEBUG para saber si es JSON o HTML
+      console.log("🟡 Tipo de datos:", typeof res.data);
+      console.log("🟡 Primeros caracteres:", JSON.stringify(res.data).slice(0, 100));
 
-      // ⚠️ Verifica si lo que recibes es un array directamente
+      // ✅ Validación segura del array
       if (Array.isArray(res.data)) {
         setProductos(res.data);
-      } else if (Array.isArray(res.data.productos)) {
-        setProductos(res.data.productos);
-      } else if (Array.isArray(res.data.data)) {
-        setProductos(res.data.data);
       } else {
-        console.warn("⚠️ No se encontró un array válido en la respuesta.");
+        console.warn("⚠️ La API no devolvió un array.");
         setProductos([]);
       }
     } catch (error) {
@@ -33,7 +31,7 @@ const AdminProductos = () => {
   const eliminarProducto = async (id) => {
     try {
       await axios.delete(`https://tienda-bm-backend-1.onrender.com/api/productos/${id}`);
-      obtenerProductos(); // Recargar lista
+      obtenerProductos(); // recargar productos
     } catch (error) {
       console.error("❌ Error al eliminar producto:", error);
     }
@@ -42,7 +40,6 @@ const AdminProductos = () => {
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-4">Administrar Productos</h1>
-
       <table className="min-w-full bg-white rounded shadow">
         <thead>
           <tr className="text-left border-b">
