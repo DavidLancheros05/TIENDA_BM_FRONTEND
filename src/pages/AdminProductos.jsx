@@ -10,24 +10,30 @@ const AdminProductos = () => {
 
   const obtenerProductos = async () => {
     try {
-      const res = await axios.get("/api/productos");
-      console.log("📦 Productos desde backend:", res.data);
+      const res = await axios.get("https://tienda-bm-backend-1.onrender.com/api/productos");
 
+      console.log("📦 Respuesta del backend:", res.data);
+
+      // ⚠️ Verifica si lo que recibes es un array directamente
       if (Array.isArray(res.data)) {
         setProductos(res.data);
+      } else if (Array.isArray(res.data.productos)) {
+        setProductos(res.data.productos);
+      } else if (Array.isArray(res.data.data)) {
+        setProductos(res.data.data);
       } else {
-        console.warn("⚠️ La API no devolvió un array.");
+        console.warn("⚠️ No se encontró un array válido en la respuesta.");
         setProductos([]);
       }
     } catch (error) {
-      console.error("❌ Error al cargar productos:", error);
+      console.error("❌ Error al obtener productos:", error);
     }
   };
 
   const eliminarProducto = async (id) => {
     try {
-      await axios.delete(`/api/productos/${id}`);
-      obtenerProductos();
+      await axios.delete(`https://tienda-bm-backend-1.onrender.com/api/productos/${id}`);
+      obtenerProductos(); // Recargar lista
     } catch (error) {
       console.error("❌ Error al eliminar producto:", error);
     }
@@ -66,8 +72,8 @@ const AdminProductos = () => {
             ))
           ) : (
             <tr>
-              <td colSpan="3" className="p-4 text-center">
-                No hay productos disponibles.
+              <td className="p-4 text-center" colSpan="3">
+                No hay productos para mostrar.
               </td>
             </tr>
           )}
