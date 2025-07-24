@@ -48,7 +48,7 @@ function App() {
                 <Route path="/pago-exitoso/*" element={<PagoExitoso />} />
                 <Route path="/pago-cancelado/*" element={<PagoCancelado />} />
 
-                <Route path="/admin" element={<AdminDashboard />} />
+                <Route path="/adminDashboard" element={<AdminDashboard />} />
                 <Route path="/admin/productos" element={<AdminProductos />} />
                 <Route path="/admin/ventas" element={<AdminVentas />} />
                 <Route path="/login" element={<LoginAdmin />} />
