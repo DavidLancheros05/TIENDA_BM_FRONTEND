@@ -33,7 +33,7 @@ export const CarritoProvider = ({ children }) => {
   }, [usuario]);
 
   // ✅ Guardar carrito cada vez que cambia
-  const guardarCarrito = () => {
+ const guardarCarrito = () => {
   if (!usuario || !usuario.token) return;
 
   const payload = {
@@ -58,18 +58,10 @@ export const CarritoProvider = ({ children }) => {
     .then(res => res.json())
     .then(data => {
       console.log('✅ Carrito guardado:', data);
-
-      // ⚡️ AQUÍ: actualizar carrito local con productos populados del backend
-      setCarrito(
-        data.carrito?.productos?.map(p => ({
-          producto: p.producto, // ya populado!
-          cantidad: p.cantidad,
-        })) || []
-      );
+      // 🚫 NO HAGAS setCarrito aquí, para que no se dispare en bucle
     })
     .catch(err => console.error('❌ Error guardando carrito:', err));
 };
-
   // ✅ Agregar producto
   const agregarAlCarrito = (producto) => {
     setCarrito(prev => {
