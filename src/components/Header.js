@@ -57,11 +57,15 @@ const Header = () => {
 
             {!usuario && (
               <>
-                <li className="nav-item">
-                  <Link className="nav-link" to="/login">Login</Link>
+                <li className="nav-item ms-2">
+                  <Link className="btn btn-success" to="/login">
+                    Iniciar sesión
+                  </Link>
                 </li>
-                <li className="nav-item">
-                  <Link className="nav-link" to="/register">Registrar</Link>
+                <li className="nav-item ms-2">
+                  <Link className="btn btn-outline-success" to="/register">
+                    Registrar
+                  </Link>
                 </li>
               </>
             )}
@@ -76,11 +80,10 @@ const Header = () => {
                     <Link className="nav-link" to="/adminDashboard">Panel</Link>
                   </li>
                 )}
-                <li className="nav-item">
+                <li className="nav-item ms-2">
                   <button
                     onClick={handleLogout}
-                    className="btn btn-link nav-link"
-                    style={{ padding: 0 }}
+                    className="btn btn-danger"
                   >
                     Cerrar sesión
                   </button>
