@@ -13,22 +13,27 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('usuario', JSON.stringify(usuario));
     } else {
       localStorage.removeItem('usuario');
+      localStorage.removeItem('token'); // borra token si cierra sesión
     }
   }, [usuario]);
 
-  // ✅ login ahora guarda TODO el usuario (incluyendo _id, nombre, token, rol, etc.)
-const login = (user) => {
-  const usuarioConId = {
-    ...user,
-    _id: user._id || user.id // 🔁 asegura que siempre exista _id
-  };
+  const login = (user) => {
+    const usuarioConId = {
+      ...user,
+      _id: user._id || user.id
+    };
 
-  setUsuario(usuarioConId);
-  console.log('✅ Usuario logueado:', usuarioConId);
-};
+    setUsuario(usuarioConId);
+    if (user.token) {
+      localStorage.setItem('token', user.token);
+    }
+
+    console.log('✅ Usuario logueado:', usuarioConId);
+  };
 
   const logout = () => {
     setUsuario(null);
+    localStorage.removeItem('token');
     console.log('👋 Usuario deslogueado');
   };
 
