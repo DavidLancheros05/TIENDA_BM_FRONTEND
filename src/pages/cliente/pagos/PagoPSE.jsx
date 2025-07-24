@@ -4,8 +4,8 @@ import axios from 'axios';
 
 const Carrito = () => {
   const { carrito, eliminarDelCarrito, limpiarCarrito } = useContext(CarritoContext);
-
-  const total = carrito.reduce((acc, item) => acc + item.precio * item.cantidad, 0);
+console.log('✅ carrito:', carrito);
+ const total = carrito.reduce((acc, item) => acc + item.producto.precio * item.cantidad, 0);
 
   const crearLinkPago = async () => {
     const totalEnCentavos = Math.round(total * 100); // Wompi requiere valor en centavos
