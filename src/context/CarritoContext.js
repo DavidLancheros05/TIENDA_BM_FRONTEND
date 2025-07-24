@@ -6,44 +6,57 @@ export const CarritoContext = createContext();
 export const CarritoProvider = ({ children }) => {
   const { usuario } = useContext(AuthContext);
   const [carrito, setCarrito] = useState([]);
-const API_URL = `${process.env.REACT_APP_API_URL}/carrito`;
+  const API_URL = `${process.env.REACT_APP_API_URL}/carrito`;
 
-useEffect(() => {
-  if (usuario) {
-    fetch(API_URL, {
+  useEffect(() => {
+    if (usuario) {
+      fetch(API_URL, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      })
+        .then(res => res.json())
+        .then(data => {
+          console.log('🛒 Cargando carrito:', data);
+          setCarrito(
+            data.productos?.map(p => ({
+              _id: p.producto._id,
+              nombre: p.producto.nombre,
+              precio: p.producto.precio,
+              cantidad: p.cantidad
+            })) || []
+          );
+        })
+        .catch(err => console.error(err));
+    }
+  }, [usuario]);
+
+  const guardarCarrito = () => {
+    if (!usuario) return;
+
+    const payload = {
+      productos: carrito.map(item => ({
+        producto: item._id,
+        cantidad: item.cantidad
+      }))
+    };
+
+    console.log('🚩 Guardando carrito con:', payload);
+
+    fetch(`${API_URL}/guardar`, {
+      method: 'POST',
       headers: {
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
+      body: JSON.stringify(payload),
     })
       .then(res => res.json())
       .then(data => {
-        console.log('🛒 Cargando carrito:', data);
-        setCarrito(data.productos || []);
+        console.log('✅ Carrito guardado:', data);
       })
       .catch(err => console.error(err));
-  }
-}, [usuario]);
-
-const guardarCarrito = () => {
-  if (!usuario) return;
-
-  fetch(`${API_URL}/guardar`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${localStorage.getItem('token')}`,
-    },
-    body: JSON.stringify({
-      usuarioId: usuario._id,
-      productos: carrito,
-    }),
-  })
-    .then(res => res.json())
-    .then(data => {
-      console.log('✅ Carrito guardado:', data);
-    })
-    .catch(err => console.error(err));
-};
+  };
 
   const agregarAlCarrito = (producto) => {
     setCarrito(prev => {
@@ -68,7 +81,6 @@ const guardarCarrito = () => {
     setCarrito([]);
   };
 
-  // Guarda carrito cada vez que cambia
   useEffect(() => {
     if (usuario) guardarCarrito();
   }, [carrito]);
