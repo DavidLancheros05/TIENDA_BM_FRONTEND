@@ -68,9 +68,12 @@ const Header = () => {
 
             {usuario && (
               <>
+                <li className="nav-item d-flex align-items-center text-white me-3">
+                  👋 Hola, {usuario.nombre}
+                </li>
                 {usuario.rol === 'admin' && (
                   <li className="nav-item">
-                    <Link className="nav-link" to="/admin">Panel</Link>
+                    <Link className="nav-link" to="/adminDashboard">Panel</Link>
                   </li>
                 )}
                 <li className="nav-item">
