@@ -15,7 +15,7 @@ const Productos = () => {
     .catch(err => console.error(err));
 }, []);
 
-  const total = carrito.reduce((acc, item) => acc + item.precio * item.cantidad, 0);
+  const total = carrito.reduce((acc, item) => acc + item.producto.precio * item.cantidad, 0);
 
   return (
     <>

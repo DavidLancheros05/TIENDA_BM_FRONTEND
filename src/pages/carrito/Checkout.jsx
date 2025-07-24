@@ -36,7 +36,7 @@ const Checkout = () => {
     },
   });
 
-  const total = carrito.reduce((acc, item) => acc + item.precio * item.cantidad, 0);
+  const total = carrito.reduce((acc, item) => acc + item.producto.precio * item.cantidad, 0);
 
   const onSubmit = async (data) => {
     if (!usuario?._id && !usuario?.id) {
@@ -51,10 +51,10 @@ const Checkout = () => {
 
     const ventaYLink = {
       usuarioId: usuario._id || usuario.id,
-      productos: carrito.map(item => ({
-        producto: item._id,
-        cantidad: item.cantidad
-      })),
+productos: carrito.map(item => ({
+  producto: item.producto._id,
+  cantidad: item.cantidad
+})),
       total,
       metodoPago: "PSE",
       direccionEnvio: {
