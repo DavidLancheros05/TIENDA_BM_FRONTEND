@@ -15,10 +15,12 @@ export default function AdminProductos() {
     tipoProducto: "",
     categoria: "",
     imagenes: "",
-    imagenPrincipal: "", // 👈 Nuevo campo: URL principal
+    imagenPrincipal: "",
     colores: "",
     tallas: "",
   });
+
+  const API_URL = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
     fetchProductos();
@@ -26,7 +28,7 @@ export default function AdminProductos() {
 
   const fetchProductos = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/productos");
+      const res = await axios.get(`${API_URL}/productos`);
       setProductos(res.data);
     } catch (error) {
       console.error("Error al obtener productos:", error);
@@ -63,7 +65,6 @@ export default function AdminProductos() {
   const handleGuardar = async (id) => {
     try {
       const imagenes = [];
-
       if (formData.imagenPrincipal?.trim()) {
         imagenes.push({ url: formData.imagenPrincipal.trim(), esPrincipal: true });
       }
@@ -71,7 +72,7 @@ export default function AdminProductos() {
       const adicionales = formData.imagenes
         .split(",")
         .map((s) => s.trim())
-        .filter((s) => s !== "");
+        .filter(Boolean);
 
       adicionales.forEach((url) => imagenes.push({ url }));
 
@@ -89,7 +90,7 @@ export default function AdminProductos() {
         tallas: formData.tallas.split(",").map((s) => s.trim()),
       };
 
-      await axios.put(`http://localhost:5000/api/productos/${id}`, actualizado);
+      await axios.put(`${API_URL}/productos/${id}`, actualizado);
       setEditandoId(null);
       fetchProductos();
     } catch (error) {
@@ -110,7 +111,6 @@ export default function AdminProductos() {
   const handleAgregarNuevo = async () => {
     try {
       const imagenes = [];
-
       if (nuevoProducto.imagenPrincipal?.trim()) {
         imagenes.push({ url: nuevoProducto.imagenPrincipal.trim(), esPrincipal: true });
       }
@@ -118,7 +118,7 @@ export default function AdminProductos() {
       const adicionales = nuevoProducto.imagenes
         .split(",")
         .map((s) => s.trim())
-        .filter((s) => s !== "");
+        .filter(Boolean);
 
       adicionales.forEach((url) => imagenes.push({ url }));
 
@@ -136,7 +136,7 @@ export default function AdminProductos() {
         tallas: nuevoProducto.tallas.split(",").map((s) => s.trim()),
       };
 
-      await axios.post("http://localhost:5000/api/productos", nuevo);
+      await axios.post(`${API_URL}/productos`, nuevo);
       setNuevoProducto({
         nombre: "",
         descripcion: "",
@@ -182,7 +182,6 @@ export default function AdminProductos() {
           </thead>
 
           <tbody>
-            {/* Nueva fila para agregar */}
             <tr className="border-t bg-green-50">
               <td><input name="nombre" value={nuevoProducto.nombre} onChange={handleNuevoChange} /></td>
               <td><input name="descripcion" value={nuevoProducto.descripcion} onChange={handleNuevoChange} /></td>
@@ -203,7 +202,6 @@ export default function AdminProductos() {
               </td>
             </tr>
 
-            {/* Lista productos */}
             {productos.map((producto) => (
               <tr key={producto._id} className="border-t">
                 {editandoId === producto._id ? (
