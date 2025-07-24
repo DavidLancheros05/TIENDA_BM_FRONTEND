@@ -6,7 +6,7 @@ export const CarritoContext = createContext();
 export const CarritoProvider = ({ children }) => {
   const { usuario } = useContext(AuthContext);
   const [carrito, setCarrito] = useState([]);
-  const API_URL = `${process.env.REACT_APP_API_URL}/carrito`;
+const API_URL = `${process.env.REACT_APP_API_URL}/api/carrito`;
 
   useEffect(() => {
     if (usuario) {
