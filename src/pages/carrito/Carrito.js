@@ -29,28 +29,28 @@ const Carrito = () => {
         <>
           <ul className="list-group mb-3">
             {carrito.map(item => (
-              <li
-                key={item.producto?._id || item._id}
-                className="list-group-item d-flex justify-content-between align-items-center"
-              >
-                <div>
-                  <strong>{item.producto?.nombre || 'Producto desconocido'}</strong> <br />
-                  Cantidad: {item.cantidad} <br />
-                  Precio unitario: ${item.producto?.precio?.toFixed(2) || '0.00'}
-                </div>
-                <div>
-                  <span className="fw-bold">
-                    ${(item.producto?.precio * item.cantidad).toFixed(2) || '0.00'}
-                  </span>
-                  <button 
-                    className="btn btn-sm btn-danger ms-3"
-                    onClick={() => eliminarDelCarrito(item.producto?._id || item._id)}
-                  >
-                    Eliminar
-                  </button>
-                </div>
-              </li>
-            ))}
+  <li
+    key={item.producto?._id || item._id}
+    className="list-group-item d-flex justify-content-between align-items-center"
+  >
+    <div>
+      <strong>{item.producto?.nombre || 'Producto desconocido'}</strong> <br />
+      Cantidad: {item.cantidad} <br />
+      Precio unitario: ${(item.producto?.precio ?? 0).toFixed(2)}
+    </div>
+    <div>
+      <span className="fw-bold">
+        ${((item.producto?.precio ?? 0) * item.cantidad).toFixed(2)}
+      </span>
+      <button 
+        className="btn btn-sm btn-danger ms-3"
+        onClick={() => eliminarDelCarrito(item.producto?._id || item._id)}
+      >
+        Eliminar
+      </button>
+    </div>
+  </li>
+))}
           </ul>
 
           <div className="d-flex justify-content-between align-items-center">
