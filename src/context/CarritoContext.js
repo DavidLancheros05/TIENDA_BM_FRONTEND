@@ -34,33 +34,41 @@ export const CarritoProvider = ({ children }) => {
 
   // ✅ Guardar carrito cada vez que cambia
   const guardarCarrito = () => {
-    if (!usuario || !usuario.token) return;
+  if (!usuario || !usuario.token) return;
 
-    const payload = {
-      productos: carrito
-        .filter(item => item.producto?._id)
-        .map(item => ({
-          producto: item.producto._id,
-          cantidad: item.cantidad,
-        })),
-    };
-
-    console.log('🚩 Guardando carrito con:', payload);
-
-    fetch(`${API_URL}/guardar`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${usuario.token}`,
-      },
-      body: JSON.stringify(payload),
-    })
-      .then(res => res.json())
-      .then(data => {
-        console.log('✅ Carrito guardado:', data);
-      })
-      .catch(err => console.error('❌ Error guardando carrito:', err));
+  const payload = {
+    productos: carrito
+      .filter(item => item.producto?._id)
+      .map(item => ({
+        producto: item.producto._id,
+        cantidad: item.cantidad,
+      })),
   };
+
+  console.log('🚩 Guardando carrito con:', payload);
+
+  fetch(`${API_URL}/guardar`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${usuario.token}`,
+    },
+    body: JSON.stringify(payload),
+  })
+    .then(res => res.json())
+    .then(data => {
+      console.log('✅ Carrito guardado:', data);
+
+      // ⚡️ AQUÍ: actualizar carrito local con productos populados del backend
+      setCarrito(
+        data.carrito?.productos?.map(p => ({
+          producto: p.producto, // ya populado!
+          cantidad: p.cantidad,
+        })) || []
+      );
+    })
+    .catch(err => console.error('❌ Error guardando carrito:', err));
+};
 
   // ✅ Agregar producto
   const agregarAlCarrito = (producto) => {
