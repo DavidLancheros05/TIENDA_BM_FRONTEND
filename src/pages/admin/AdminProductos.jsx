@@ -22,18 +22,19 @@ export default function AdminProductos() {
 
   const API_URL = process.env.REACT_APP_API_URL;
 
-  useEffect(() => {
-    fetchProductos();
-  }, []);
+useEffect(() => {
+  fetchProductos();
+}, []);
 
-  const fetchProductos = async () => {
-    try {
-      const res = await axios.get(`${API_URL}/api/productos`);
-      setProductos(res.data);
-    } catch (error) {
-      console.error("Error al obtener productos:", error);
-    }
-  };
+const fetchProductos = async () => {
+  try {
+    // ⚡️ Aquí: admin=true para recibir `imagenes` completo
+    const res = await axios.get(`${API_URL}/api/productos?admin=true`);
+    setProductos(res.data);
+  } catch (error) {
+    console.error("Error al obtener productos:", error);
+  }
+};
 
   const handleEditar = (producto) => {
     setEditandoId(producto._id);
@@ -90,7 +91,7 @@ export default function AdminProductos() {
         tallas: formData.tallas.split(",").map((s) => s.trim()),
       };
 
-      await axios.put(`${API_URL}/productos/${id}`, actualizado);
+      await axios.put(`${API_URL}/api/productos/${id}`, actualizado);
       setEditandoId(null);
       fetchProductos();
     } catch (error) {
@@ -136,7 +137,7 @@ export default function AdminProductos() {
         tallas: nuevoProducto.tallas.split(",").map((s) => s.trim()),
       };
 
-      await axios.post(`${API_URL}/productos`, nuevo);
+      await axios.post(`${API_URL}/api/productos`, nuevo);
       setNuevoProducto({
         nombre: "",
         descripcion: "",
