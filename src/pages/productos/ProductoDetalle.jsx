@@ -1,3 +1,4 @@
+// src/pages/ProductoDetalle.jsx
 import React, { useEffect, useState, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -37,6 +38,7 @@ const ProductoDetalle = () => {
   }, [id]);
 
   const handleAgregar = () => agregarAlCarrito({ ...producto, cantidad });
+
   const handleComprarAhora = () => {
     agregarAlCarrito({ ...producto, cantidad });
     navigate('/carrito');
@@ -54,19 +56,33 @@ const ProductoDetalle = () => {
 
   const enviarResena = async () => {
     if (!token) return navigate('/login');
+
     await axios.post(
       `${apiUrl}/api/productos/${producto._id}/resena`,
       { estrellas, comentario },
       { headers: { Authorization: `Bearer ${token}` } }
     );
+
     setComentario('');
     setEstrellas(5);
+
     const res = await axios.get(`${apiUrl}/api/productos/${producto._id}`);
     setProducto(res.data);
     setResenas((await axios.get(`${apiUrl}/api/resenas/${producto._id}`)).data);
   };
 
-  if (!producto) return <div className="container py-5 text-center"><h4 className="text-danger">❌ Producto no encontrado</h4></div>;
+  if (!producto) {
+    return (
+      <div className="container py-5 text-center">
+        <h4 className="text-danger">❌ Producto no encontrado</h4>
+      </div>
+    );
+  }
+
+  // ✅ URL final de la imagen principal:
+  const imagenUrlFinal = imagenSeleccionada.startsWith('http')
+    ? imagenSeleccionada
+    : `${apiUrl.replace(/\/$/, '')}/${imagenSeleccionada.replace(/\\/g, '/').replace(/^\/+/, '')}`;
 
   return (
     <div className="container py-5">
@@ -80,7 +96,7 @@ const ProductoDetalle = () => {
           />
           <div className="flex-grow-1 d-flex align-items-center justify-content-center">
             <img
-              src={`${apiUrl.replace(/\/$/, '')}/${imagenSeleccionada.replace(/\\/g, '/').replace(/^\/+/, '')}`}
+              src={imagenUrlFinal}
               alt={producto.nombre}
               className="img-fluid rounded shadow"
               style={{ maxHeight: '400px', objectFit: 'contain' }}
@@ -96,7 +112,7 @@ const ProductoDetalle = () => {
         <div className="row">
           <div className="col-md-6">
             <h4 className="text-success">${producto.precio.toLocaleString()}</h4>
-            <p><strong>Stock:</strong>{producto.stock > 0 ? `Disponible (${producto.stock})` : 'Agotado'}</p>
+            <p><strong>Stock:</strong> {producto.stock > 0 ? `Disponible (${producto.stock})` : 'Agotado'}</p>
             <input
               type="number"
               className="form-control mb-3"
