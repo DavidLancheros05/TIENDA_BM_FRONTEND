@@ -1,4 +1,3 @@
-// src/pages/ProductoDetalle.jsx
 import React, { useEffect, useState, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -94,7 +93,7 @@ const ProductoDetalle = () => {
             imagenes={producto.imagenes?.length > 0 ? producto.imagenes : [producto.imagen]}
             imagenSeleccionada={imagenSeleccionada}
             onSeleccionar={setImagenSeleccionada}
-            getImagenUrl={getImagenUrl} {/* ✅ PASAR helper */}
+            getImagenUrl={getImagenUrl} // ✅ PASA el helper correcto
           />
           <div className="flex-grow-1 d-flex align-items-center justify-content-center">
             <img

@@ -4,7 +4,7 @@ export const GaleriaImagenes = ({ imagenes, imagenSeleccionada, onSeleccionar, g
   <div className="me-3">
     {imagenes.map((img, idx) => {
       const url = typeof img === 'string' ? img : img.url;
-      const finalUrl = getImagenUrl(url); // ✅ Usa el helper que viene de ProductoDetalle
+      const finalUrl = getImagenUrl(url); // ✅ SIEMPRE usa el helper
 
       return (
         <img
