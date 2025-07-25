@@ -1,4 +1,3 @@
-// src/componentes/ListadoProductos.jsx
 import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
@@ -7,8 +6,8 @@ import { CarritoContext } from '../context/CarritoContext';
 const ListadoProductos = ({ tipo }) => {
   const [productos, setProductos] = useState([]);
   const [filtro, setFiltro] = useState('');
-  const [loading, setLoading] = useState(true); // 🆕 estado de carga
-  const [error, setError] = useState(null); // 🆕 manejo de error
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const { agregarAlCarrito } = useContext(CarritoContext);
 
@@ -16,7 +15,9 @@ const ListadoProductos = ({ tipo }) => {
     const fetchProductos = async () => {
       setLoading(true);
       try {
-        const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/productos?tipoProducto=${tipo}`);
+        const res = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/productos?tipoProducto=${tipo}`
+        );
         setProductos(res.data);
       } catch (err) {
         console.error(`❌ Error al obtener ${tipo}s:`, err);
@@ -35,7 +36,8 @@ const ListadoProductos = ({ tipo }) => {
       )
     : productos;
 
-  const titulo = tipo === 'bicicleta' ? '🚴 Bicicletas Disponibles' : '🧢 Accesorios Disponibles';
+  const titulo =
+    tipo === 'bicicleta' ? '🚴 Bicicletas Disponibles' : '🧢 Accesorios Disponibles';
   const placeholder = tipo === 'bicicleta' ? 'Buscar bicicleta...' : 'Buscar accesorio...';
 
   return (
@@ -65,12 +67,18 @@ const ListadoProductos = ({ tipo }) => {
                   to={`/producto/${producto._id}`}
                   className="text-decoration-none text-dark"
                 >
-                  <img
-                    src={`${process.env.REACT_APP_API_URL}${producto.imagen.replace(/\\/g, '/')}`}
-                    alt={producto.nombre}
-                    className="card-img-top"
-                    style={{ height: '180px', objectFit: 'cover' }}
-                  />
+                  {producto.imagenes && producto.imagenes.length > 0 && (
+                    <img
+                      src={
+                        producto.imagenes[0].url.startsWith('http')
+                          ? producto.imagenes[0].url
+                          : `${process.env.REACT_APP_API_URL}${producto.imagenes[0].url}`
+                      }
+                      alt={producto.nombre}
+                      className="card-img-top"
+                      style={{ height: '180px', objectFit: 'cover' }}
+                    />
+                  )}
                   <div className="card-body">
                     <h5 className="card-title">{producto.nombre}</h5>
                     <p className="fw-bold text-success">
