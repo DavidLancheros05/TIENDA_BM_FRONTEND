@@ -27,7 +27,6 @@ const ProductoDetalle = () => {
         setProducto(res.data);
         const img = res.data.imagenes?.[0];
         setImagenSeleccionada(typeof img === 'string' ? img : img?.url || res.data.imagen);
-
         return axios.get(`${apiUrl}/api/resenas/${res.data._id}`);
       })
       .then(resResenas => setResenas(resResenas.data))
@@ -79,10 +78,13 @@ const ProductoDetalle = () => {
     );
   }
 
-  // ✅ URL final de la imagen principal:
-  const imagenUrlFinal = imagenSeleccionada.startsWith('http')
-    ? imagenSeleccionada
-    : `${apiUrl.replace(/\/$/, '')}/${imagenSeleccionada.replace(/\\/g, '/').replace(/^\/+/, '')}`;
+  const getImagenUrl = (url) => {
+    return url.startsWith('http')
+      ? url
+      : `${apiUrl.replace(/\/$/, '')}/${url.replace(/^\/+/, '')}`;
+  };
+
+  const imagenUrlFinal = getImagenUrl(imagenSeleccionada);
 
   return (
     <div className="container py-5">
@@ -92,7 +94,7 @@ const ProductoDetalle = () => {
             imagenes={producto.imagenes?.length > 0 ? producto.imagenes : [producto.imagen]}
             imagenSeleccionada={imagenSeleccionada}
             onSeleccionar={setImagenSeleccionada}
-            apiUrl={apiUrl}
+            getImagenUrl={getImagenUrl} {/* ✅ PASAR helper */}
           />
           <div className="flex-grow-1 d-flex align-items-center justify-content-center">
             <img
