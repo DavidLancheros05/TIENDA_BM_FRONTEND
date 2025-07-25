@@ -66,7 +66,7 @@ const ListadoProductos = ({ tipo }) => {
                   className="text-decoration-none text-dark"
                 >
                   <img
-                    src={`${process.env.REACT_APP_API_URL}/${producto.imagen.replace(/\\/g, '/')}`}
+                    src={`${process.env.REACT_APP_API_URL}${producto.imagen.replace(/\\/g, '/')}`}
                     alt={producto.nombre}
                     className="card-img-top"
                     style={{ height: '180px', objectFit: 'cover' }}

@@ -7,7 +7,7 @@ export const GaleriaImagenes = ({ imagenes, imagenSeleccionada, onSeleccionar, a
       return (
         <img
           key={idx}
-          src={`${apiUrl}/${url}`}
+          src={`${apiUrl.replace(/\/$/, '')}/${url.replace(/^\/+/, '')}`}
           alt={`Mini ${idx}`}
           onClick={() => onSeleccionar(url)}
           style={{ width: '60px', marginBottom: '8px', cursor: 'pointer' }}

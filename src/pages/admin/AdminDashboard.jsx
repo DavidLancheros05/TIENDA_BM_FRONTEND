@@ -16,6 +16,10 @@ function AdminDashboard() {
         Ver Todas las Ventas
       </button>
 
+      <button onClick={() => navigate('/admin/inventario')}>
+        Gestionar Inventario
+      </button>
+
       <button onClick={() => alert('Función no implementada')}>
         Administrar Otros
       </button>

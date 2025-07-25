@@ -8,8 +8,8 @@ import Checkout from './pages/carrito/Checkout';
 import Header from './components/Header';
 import Footer from './components/Footer';
 
+import EditarImagenesProducto from "./pages/admin/EditarImagenesProducto";
 import Inicio from './pages/Inicio';
-import Productos from './pages/productos/Productos';
 import ProductoDetalle from './pages/productos/ProductoDetalle';
 import ListadoProductos from './components/ListadoProductos';
 import PagoPSE from './pages/cliente/pagos/PagoPSE';
@@ -37,7 +37,6 @@ function App() {
             <main className="flex-grow px-4 py-6 container mx-auto">
               <Routes>
                 <Route path="/" element={<Inicio />} />
-                <Route path="/productos" element={<Productos />} />
                 <Route path="/producto/:id" element={<ProductoDetalle />} />
 
                 <Route path="/bicicletas" element={<ListadoProductos tipo="bicicleta" />} />
@@ -47,7 +46,7 @@ function App() {
                 <Route path="/pse" element={<PagoPSE />} />
                 <Route path="/pago-exitoso/*" element={<PagoExitoso />} />
                 <Route path="/pago-cancelado/*" element={<PagoCancelado />} />
-
+<Route path="/admin/productos/:id/imagenes" element={<EditarImagenesProducto />} />
                 <Route path="/adminDashboard" element={<AdminDashboard />} />
                 <Route path="/admin/productos" element={<AdminProductos />} />
                 <Route path="/admin/ventas" element={<AdminVentas />} />

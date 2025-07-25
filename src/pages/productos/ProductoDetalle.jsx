@@ -80,7 +80,7 @@ const ProductoDetalle = () => {
           />
           <div className="flex-grow-1 d-flex align-items-center justify-content-center">
             <img
-              src={`${apiUrl}/${imagenSeleccionada}`}
+              src={`${apiUrl.replace(/\/$/, '')}/${imagenSeleccionada.replace(/\\/g, '/').replace(/^\/+/, '')}`}
               alt={producto.nombre}
               className="img-fluid rounded shadow"
               style={{ maxHeight: '400px', objectFit: 'contain' }}
