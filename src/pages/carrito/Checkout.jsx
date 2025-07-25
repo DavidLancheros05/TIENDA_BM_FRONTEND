@@ -32,11 +32,14 @@ const Checkout = () => {
     defaultValues: {
       nombreCompleto: usuario?.nombre || '',
       correo: usuario?.correo || '',
-      pais: 'Colombia', // ✅ Valor por defecto
+      pais: 'Colombia',
     },
   });
 
-  const total = carrito.reduce((acc, item) => acc + item.producto.precio * item.cantidad, 0);
+  const total = carrito.reduce(
+    (acc, item) => acc + Number(item.producto.precio) * item.cantidad,
+    0
+  );
 
   const onSubmit = async (data) => {
     if (!usuario?._id && !usuario?.id) {
@@ -51,28 +54,33 @@ const Checkout = () => {
 
     const ventaYLink = {
       usuarioId: usuario._id || usuario.id,
-productos: carrito.map(item => ({
-  producto: item.producto._id,
-  cantidad: item.cantidad
-})),
+      productos: carrito.map(item => ({
+        producto: item.producto._id,
+        cantidad: item.cantidad
+      })),
       total,
       metodoPago: "PSE",
       direccionEnvio: {
         ...data
       },
       name: "Compra en Col_Bog_Bike",
-      description: "Pago con PSE (sandbox)",
+      description: "Pago con PSE",
       currency: "COP",
-      amount_in_cents: total * 100,
+      amount_in_cents: Math.round(total * 100),
       redirect_url: `${BASE_FRONTEND_URL}/pago-exitoso`,
       cancel_url: `${BASE_FRONTEND_URL}/pago-cancelado`,
     };
 
     try {
       const API_URL = process.env.REACT_APP_API_URL;
-      console.log('📦 Venta enviada:', ventaYLink);
+      console.log('✅ TOTAL calculado:', total);
+      console.log('✅ amount_in_cents:', ventaYLink.amount_in_cents);
+      console.log('📦 Payload enviado al backend:', JSON.stringify(ventaYLink, null, 2));
+      console.log('👉 Endpoint:', `${API_URL}/api/pagos/crear-link-pago`);
+
       const response = await axios.post(`${API_URL}/api/pagos/crear-link-pago`, ventaYLink);
       const link = response.data?.link_pago;
+
       if (link) {
         limpiarCarrito();
         window.location.href = link;
@@ -80,7 +88,10 @@ productos: carrito.map(item => ({
         alert("No se pudo obtener el link de pago.");
       }
     } catch (error) {
-      console.error("Error creando link:", error);
+      console.error("❌ Error creando link de pago:", error);
+      if (error.response) {
+        console.error("📡 Respuesta del servidor:", error.response.data);
+      }
       alert("Error al crear el link de pago.");
     }
   };
@@ -126,17 +137,17 @@ productos: carrito.map(item => ({
           {errors.departamento && <p className="text-danger">{errors.departamento.message}</p>}
         </div>
 
- <div className="mb-3">
-  <label>País</label>
-  <input
-    type="text"
-    className="form-control"
-    value="Colombia"   // 🔑 Muestra fijo
-    readOnly          // 🔒 No editable
-    {...register('pais')}
-  />
-  {errors.pais && <p className="text-danger">{errors.pais.message}</p>}
-</div>
+        <div className="mb-3">
+          <label>País</label>
+          <input
+            type="text"
+            className="form-control"
+            value="Colombia"
+            readOnly
+            {...register('pais')}
+          />
+          {errors.pais && <p className="text-danger">{errors.pais.message}</p>}
+        </div>
 
         <h4 className="mt-4">Total a pagar: ${total.toFixed(2)}</h4>
 
