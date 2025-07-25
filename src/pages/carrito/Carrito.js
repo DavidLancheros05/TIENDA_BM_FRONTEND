@@ -3,7 +3,7 @@ import { CarritoContext } from '../../context/CarritoContext';
 import { useNavigate } from 'react-router-dom';
 
 const Carrito = () => {
-  const { carrito, eliminarDelCarrito, limpiarCarrito } = useContext(CarritoContext);
+  const { carrito, eliminarDelCarrito, limpiarCarrito, setCarrito } = useContext(CarritoContext);
   const navigate = useNavigate();
 
   const total = carrito.reduce(
@@ -19,54 +19,49 @@ const Carrito = () => {
     navigate('/checkout');
   };
 
+  const cambiarCantidad = (index, delta) => {
+    setCarrito(prev => {
+      const nuevo = [...prev];
+      const nuevaCantidad = nuevo[index].cantidad + delta;
+      if (nuevaCantidad < 1) return prev;
+      nuevo[index].cantidad = nuevaCantidad;
+      return nuevo;
+    });
+  };
+
   return (
-    <div className="container" style={{ padding: '2rem', maxWidth: '800px', margin: 'auto' }}>
-      <h2>🛒 Tu Carrito de Compras</h2>
+    <div className="container py-5">
+      <h2>🛒 Tu Carrito</h2>
 
       {carrito.length === 0 ? (
-        <p>No hay productos en el carrito.</p>
+        <p>No hay productos.</p>
       ) : (
         <>
           <ul className="list-group mb-3">
-            {carrito.map(item => (
-  <li
-    key={item.producto?._id || item._id}
-    className="list-group-item d-flex justify-content-between align-items-center"
-  >
-    <div>
-      <strong>{item.producto?.nombre || 'Producto desconocido'}</strong> <br />
-      Cantidad: {item.cantidad} <br />
-      Precio unitario: ${(item.producto?.precio ?? 0).toFixed(2)}
-    </div>
-    <div>
-      <span className="fw-bold">
-        ${((item.producto?.precio ?? 0) * item.cantidad).toFixed(2)}
-      </span>
-      <button 
-        className="btn btn-sm btn-danger ms-3"
-        onClick={() => eliminarDelCarrito(item.producto?._id || item._id)}
-      >
-        Eliminar
-      </button>
-    </div>
-  </li>
-))}
+            {carrito.map((item, idx) => (
+              <li key={idx} className="list-group-item">
+                <strong>{item.producto?.nombre}</strong><br />
+                Color: {item.color} | Talla: {item.talla}<br />
+                <div className="d-flex align-items-center">
+                  <button onClick={() => cambiarCantidad(idx, -1)}>-</button>
+                  <span className="mx-2">{item.cantidad}</span>
+                  <button onClick={() => cambiarCantidad(idx, 1)}>+</button>
+                  <span className="ms-3">
+                    ${item.producto?.precio?.toLocaleString('es-CO')} c/u | Total: ${(item.producto?.precio * item.cantidad).toLocaleString('es-CO')}
+                  </span>
+                  <button onClick={() => eliminarDelCarrito(item.producto?._id)} className="btn btn-danger btn-sm ms-3">Eliminar</button>
+                </div>
+              </li>
+            ))}
           </ul>
 
-          <div className="d-flex justify-content-between align-items-center">
-            <h4>Total: ${total.toFixed(2)}</h4>
-            <button className="btn btn-outline-danger" onClick={limpiarCarrito}>
-              Vaciar Carrito
-            </button>
+          <div className="d-flex justify-content-between">
+            <h4>Total: ${total.toLocaleString('es-CO')}</h4>
+            <button onClick={limpiarCarrito} className="btn btn-outline-danger">Vaciar</button>
           </div>
 
-          <div className="text-center mt-4">
-            <button
-              className="btn btn-success px-4 py-2"
-              onClick={irAPagar}
-            >
-              👉 Ir a Pagar
-            </button>
+          <div className="mt-4 text-center">
+            <button onClick={irAPagar} className="btn btn-success">👉 Ir a pagar</button>
           </div>
         </>
       )}

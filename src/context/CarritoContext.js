@@ -9,7 +9,7 @@ export const CarritoProvider = ({ children }) => {
 
   const API_URL = `${process.env.REACT_APP_API_URL}/api/carrito`;
 
-  // ✅ Cargar carrito al iniciar sesión
+  // 🔄 Cargar carrito al iniciar sesión
   useEffect(() => {
     if (usuario && usuario.token) {
       fetch(API_URL, {
@@ -20,11 +20,12 @@ export const CarritoProvider = ({ children }) => {
         .then(res => res.json())
         .then(data => {
           console.log('🛒 Cargando carrito:', data);
-
           setCarrito(
             data.carrito?.productos?.map(p => ({
-              producto: p.producto, // 👈 objeto populado con nombre y precio
+              producto: p.producto, // objeto populado
               cantidad: p.cantidad,
+              color: p.color,
+              talla: p.talla,
             })) || []
           );
         })
@@ -32,60 +33,72 @@ export const CarritoProvider = ({ children }) => {
     }
   }, [usuario]);
 
-  // ✅ Guardar carrito cada vez que cambia
- const guardarCarrito = () => {
-  if (!usuario || !usuario.token) return;
+  // 🔄 Guardar carrito cada vez que cambia
+  const guardarCarrito = () => {
+    if (!usuario || !usuario.token) return;
 
-  const payload = {
-    productos: carrito
-      .filter(item => item.producto?._id)
-      .map(item => ({
-        producto: item.producto._id,
-        cantidad: item.cantidad,
-      })),
+    const payload = {
+      productos: carrito
+        .filter(item => item.producto?._id)
+        .map(item => ({
+          producto: item.producto._id,
+          cantidad: item.cantidad,
+          color: item.color,
+          talla: item.talla,
+        })),
+    };
+
+    console.log('🚩 Guardando carrito con:', payload);
+
+    fetch(`${API_URL}/guardar`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${usuario.token}`,
+      },
+      body: JSON.stringify(payload),
+    })
+      .then(res => res.json())
+      .then(data => {
+        console.log('✅ Carrito guardado:', data);
+      })
+      .catch(err => console.error('❌ Error guardando carrito:', err));
   };
 
-  console.log('🚩 Guardando carrito con:', payload);
-
-  fetch(`${API_URL}/guardar`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${usuario.token}`,
-    },
-    body: JSON.stringify(payload),
-  })
-    .then(res => res.json())
-    .then(data => {
-      console.log('✅ Carrito guardado:', data);
-      // 🚫 NO HAGAS setCarrito aquí, para que no se dispare en bucle
-    })
-    .catch(err => console.error('❌ Error guardando carrito:', err));
-};
-  // ✅ Agregar producto
-  const agregarAlCarrito = (producto) => {
+  // ➕ Agregar al carrito
+  const agregarAlCarrito = (item) => {
+    console.log('➕ Intentando agregar al carrito:', item);
     setCarrito(prev => {
-      const existe = prev.find(item => item.producto?._id === producto._id);
+      const existe = prev.find(p =>
+        p.producto?._id === item.producto._id &&
+        p.color === item.color &&
+        p.talla === item.talla
+      );
+
       if (existe) {
-        return prev.map(item =>
-          item.producto._id === producto._id
-            ? { ...item, cantidad: item.cantidad + 1 }
-            : item
+        console.log('🔄 Ya existe, sumando cantidad...');
+        return prev.map(p =>
+          p.producto._id === item.producto._id &&
+          p.color === item.color &&
+          p.talla === item.talla
+            ? { ...p, cantidad: p.cantidad + item.cantidad }
+            : p
         );
       } else {
-        return [...prev, { producto: producto, cantidad: 1 }];
+        console.log('🆕 No existe, agregando nuevo item...');
+        return [...prev, item];
       }
     });
   };
 
-  // ✅ Eliminar producto
+  // ❌ Eliminar del carrito
   const eliminarDelCarrito = (id) => {
     setCarrito(prev =>
       prev.filter(item => item.producto?._id !== id)
     );
   };
 
-  // ✅ Vaciar carrito
+  // 🧹 Vaciar carrito
   const limpiarCarrito = () => {
     setCarrito([]);
   };
@@ -97,7 +110,13 @@ export const CarritoProvider = ({ children }) => {
 
   return (
     <CarritoContext.Provider
-      value={{ carrito, agregarAlCarrito, eliminarDelCarrito, limpiarCarrito }}
+      value={{
+        carrito,
+        setCarrito,
+        agregarAlCarrito,
+        eliminarDelCarrito,
+        limpiarCarrito
+      }}
     >
       {children}
     </CarritoContext.Provider>

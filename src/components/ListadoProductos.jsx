@@ -9,8 +9,6 @@ const ListadoProductos = ({ tipo }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const { agregarAlCarrito } = useContext(CarritoContext);
-
   useEffect(() => {
     const fetchProductos = async () => {
       setLoading(true);
@@ -87,14 +85,7 @@ const ListadoProductos = ({ tipo }) => {
                   </div>
                 </Link>
 
-                <div className="card-footer border-0 bg-transparent mt-auto">
-                  <button
-                    onClick={() => agregarAlCarrito(producto)}
-                    className="btn btn-outline-primary w-100"
-                  >
-                    Agregar al carrito
-                  </button>
-                </div>
+
               </div>
             </div>
           ))}
