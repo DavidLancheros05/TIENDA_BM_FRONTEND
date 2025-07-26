@@ -7,7 +7,7 @@ import Carrito from './pages/carrito/Carrito';
 import Checkout from './pages/carrito/Checkout';
 import Header from './components/Header';
 import Footer from './components/Footer';
-import BicicletasElectrica from './pages/BicicletasElectrica'; // asegúrate que la ruta del import esté bien
+import BicicletasElectrica from './pages/productos/BicicletasElectrica';
 import EditarImagenesProducto from "./pages/admin/EditarImagenesProducto";
 import Inicio from './pages/Inicio';
 import ProductoDetalle from './pages/productos/ProductoDetalle';

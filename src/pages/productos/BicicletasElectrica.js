@@ -1,5 +1,5 @@
 import React from 'react';
-import ListadoProductos from '../componentes/ListadoProductos';
+import ListadoProductos from '../../components/ListadoProductos';
 
 const BicicletasElectrica = () => <ListadoProductos tipo="bicicletaselectrica" />;
 
