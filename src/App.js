@@ -7,7 +7,7 @@ import Carrito from './pages/carrito/Carrito';
 import Checkout from './pages/carrito/Checkout';
 import Header from './components/Header';
 import Footer from './components/Footer';
-
+import BicicletasElectrica from './pages/BicicletasElectrica'; // asegúrate que la ruta del import esté bien
 import EditarImagenesProducto from "./pages/admin/EditarImagenesProducto";
 import Inicio from './pages/Inicio';
 import ProductoDetalle from './pages/productos/ProductoDetalle';
@@ -38,7 +38,7 @@ function App() {
               <Routes>
                 <Route path="/" element={<Inicio />} />
                 <Route path="/producto/:id" element={<ProductoDetalle />} />
-
+<Route path="/bicicletaselectrica" element={<BicicletasElectrica />} />
                 <Route path="/bicicletas" element={<ListadoProductos tipo="bicicleta" />} />
                 <Route path="/accesorios" element={<ListadoProductos tipo="accesorios" />} />
 <Route path="/carrito" element={<Carrito />} />
