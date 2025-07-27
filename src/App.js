@@ -23,7 +23,7 @@ import Register from './pages/auth/Register';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminVentas from './pages/admin/AdminVentas';
 
-
+import BotonWhatsApp from './components/BotonWhatsApp';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
 function App() {
@@ -56,6 +56,7 @@ function App() {
             </main>
 
             <Footer />
+             <BotonWhatsApp />
           </div>
         </BrowserRouter>
       </CarritoProvider>
