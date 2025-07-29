@@ -20,7 +20,7 @@ export default function AdminProductos() {
   });
 
   const API_URL = import.meta.env.VITE_API_URL;
-console.log("daviddddd",VITE_API_URL)
+//console.log("daviddddd",VITE_API_URL)
 
   useEffect(() => {
     fetchProductos();

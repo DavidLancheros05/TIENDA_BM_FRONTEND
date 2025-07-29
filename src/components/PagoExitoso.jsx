@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { CarritoContext } from '../context/CarritoContext';
-import { AuthContext } from '../context/AuthContext'; // 📌 ¡Importa tu AuthContext!
+import { AuthContext } from '../context/AuthContext';
+import api from '../services/axios'; // Importa tu instancia 'api'
 
 const PagoExitoso = () => {
     const location = useLocation();
@@ -11,7 +11,10 @@ const PagoExitoso = () => {
     const [mensaje, setMensaje] = useState('Verificando el estado de tu pago...');
 
     const { vaciarCarrito } = useContext(CarritoContext);
-    const { user } = useContext(AuthContext); // 📌 ¡Obtén el usuario del AuthContext para acceder al token!
+    const { usuario } = useContext(AuthContext); // Obtenemos el usuario del AuthContext para acceder al token
+
+    // Obtener la URL base de la API desde las variables de entorno
+    const API_BASE_URL = import.meta.env.VITE_API_URL;
 
     useEffect(() => {
         const query = new URLSearchParams(location.search);
@@ -20,23 +23,22 @@ const PagoExitoso = () => {
         if (ordenId) {
             const verificarEstadoOrden = async () => {
                 try {
-                    // 📌 Obtener el token del almacenamiento local (o del contexto si ya lo tienes ahí)
-                    const token = localStorage.getItem('token'); // Asume que guardas el token en localStorage
+                    const token = usuario?.token || localStorage.getItem('token');
 
                     if (!token) {
-                        setMensaje('No estás autenticado. Por favor, inicia sesión.');
-                        // Opcional: Redirigir al login si no hay token
-                        // navigate('/login');
+                        setMensaje('No estás autenticado. Por favor, inicia sesión para ver los detalles de tu orden.');
+                        // navigate('/login'); // Opcional: redirigir al login
                         return;
                     }
 
                     const config = {
                         headers: {
-                            Authorization: `Bearer ${token}` // 📌 ¡Añade el token a la cabecera de autorización!
+                            Authorization: `Bearer ${token}`
                         }
                     };
 
-                    const response = await axios.get(`http://localhost:5000/api/ordenes/${ordenId}`, config); // 📌 Pasa la configuración
+                    // Usa la variable de entorno para la URL de la API
+                    const response = await api.get(`/ordenes/${ordenId}`, config);
                     const orden = response.data;
                     setOrdenDetalles(orden);
 
@@ -52,8 +54,8 @@ const PagoExitoso = () => {
                     console.error("❌ Error al verificar estado de la orden:", error);
                     if (error.response && error.response.status === 401) {
                         setMensaje('No autorizado para ver esta orden. Por favor, inicia sesión de nuevo.');
-                        // Opcional: Manejar la expiración del token o redirigir
-                        // navigate('/login');
+                    } else if (error.response && error.response.status === 404) {
+                        setMensaje('Orden no encontrada o no tienes permiso para verla.');
                     } else {
                         setMensaje('Error al verificar el estado de tu pago. Por favor, contacta a soporte.');
                     }
@@ -63,9 +65,7 @@ const PagoExitoso = () => {
         } else {
             setMensaje('No se encontró información de la orden.');
         }
-    }, [location.search, vaciarCarrito, user]); // Añade 'user' a las dependencias si lo usas para el token directamente
-
-    // ... (el resto de tu componente, sin cambios)
+    }, [location.search, vaciarCarrito, usuario]);
 
     return (
         <div className="container mx-auto p-4 text-center">
@@ -91,13 +91,19 @@ const PagoExitoso = () => {
                     <ul>
                         {ordenDetalles.productos.map((item, index) => (
                             <li key={index} className="flex items-center mb-2">
-                                <img src={`http://localhost:5000/${item.producto.imagenes[0]}`} alt={item.producto.nombre} className="w-16 h-16 object-cover rounded-md mr-4"/>
+                                {/* Construye la URL de la imagen usando la variable de entorno */}
+                                <img
+                                    src={`${API_BASE_URL}/uploads/${item.producto.imagenes[0]?.url}`}
+                                    alt={item.producto.nombre}
+                                    className="w-16 h-16 object-cover rounded-md mr-4"
+                                    onError={(e) => { e.target.onerror = null; e.target.src="https://placehold.co/60x60/cccccc/000000?text=No+Img" }}
+                                />
                                 <div>
                                     <p className="font-semibold">{item.producto.nombre}</p>
                                     <p>Cantidad: {item.cantidad}</p>
-                                    <p>Precio Unitario: ${item.producto.precio.toFixed(2)}</p>
-                                    <p>Color: {item.color}</p>
-                                    <p>Talla: {item.talla}</p>
+                                    <p>Precio Unitario: ${item.precioUnitario.toFixed(2)}</p>
+                                    {item.color && <p>Color: {item.color}</p>}
+                                    {item.talla && <p>Talla: {item.talla}</p>}
                                 </div>
                             </li>
                         ))}
@@ -106,8 +112,14 @@ const PagoExitoso = () => {
             )}
 
             <button
-                onClick={() => navigate('/')}
+                onClick={() => navigate('/mis-compras')}
                 className="mt-8 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            >
+                Ver Mis Compras
+            </button>
+            <button
+                onClick={() => navigate('/')}
+                className="mt-4 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded ml-2"
             >
                 Volver al Inicio
             </button>

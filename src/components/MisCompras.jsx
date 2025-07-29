@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios'; // Importar axios para hacer las peticiones
 
+import api from '../services/axios'; // o desde la ruta correcta
+
+
 const MisCompras = () => {
     const { usuario } = useAuth();
     const token = usuario?.token;
@@ -16,9 +19,7 @@ const MisCompras = () => {
             console.log("📦 MisCompras: obtenerMisCompras ejecutado");
 
             // Usar axios para la petición
-            const res = await axios.get('http://localhost:5000/api/ventas/mis-ventas', {
-                headers: { Authorization: `Bearer ${token}` },
-            });
+            const res = await api.get('/ventas/mis-ventas');
             
             console.log("🧾 MisCompras response data:", res.data);
             console.log("🔐 Token usado:", token);
