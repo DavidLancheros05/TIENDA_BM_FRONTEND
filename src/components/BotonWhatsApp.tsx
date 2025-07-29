@@ -1,4 +1,4 @@
-import React from 'react';
+
 const numero = import.meta.env.REACT_APP_NUMERO_WHATSAPP;
 const enlace = `https://wa.me/${numero}`;
 console.log("Número de WhatsApp:", numero);

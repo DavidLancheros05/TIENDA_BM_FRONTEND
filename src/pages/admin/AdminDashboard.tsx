@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { useNavigate } from 'react-router-dom';
 import { BarChart3, Package, Users, ShoppingCart, Settings, MessageSquare, DollarSign, Megaphone } from 'lucide-react';
 

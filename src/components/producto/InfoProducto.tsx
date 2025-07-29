@@ -1,4 +1,4 @@
-import React from 'react';
+
 
 export const InfoProducto = ({ producto, renderEstrellas }) => (
   <div className="col-md-6">
