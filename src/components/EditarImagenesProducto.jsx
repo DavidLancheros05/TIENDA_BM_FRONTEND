@@ -7,18 +7,18 @@ export default function EditarImagenesProducto() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [imagenes, setImagenes] = useState([]);
-  const API_URL = process.env.REACT_APP_API_URL;
+  const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const fetchProducto = async () => {
-      const res = await axios.get(`${API_URL}/api/productos/${id}`);
+      const res = await axios.get(`${API_URL}/productos/${id}`);
       setImagenes(res.data.imagenes || []);
     };
     fetchProducto();
   }, [id, API_URL]);
 
   const handleGuardar = async () => {
-    await axios.put(`${API_URL}/api/productos/${id}`, { imagenes });
+    await axios.put(`${API_URL}/productos/${id}`, { imagenes });
     alert("Imágenes actualizadas!");
     navigate("/admin/productos"); // Redirige a la tabla
   };

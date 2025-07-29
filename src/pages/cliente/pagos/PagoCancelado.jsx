@@ -20,10 +20,10 @@ const PagoCancelado = () => {
 
     const cancelarVenta = async () => {
       try {
-        const API_URL = process.env.REACT_APP_API_URL;
+        const API_URL = import.meta.env.VITE_API_URL;
         console.log("📤 Enviando solicitud para cancelar venta con ID:", ventaId);
 
-        const respuesta = await axios.post(`${API_URL}/api/pagos/cancelar-venta`, {
+        const respuesta = await axios.post(`${API_URL}/pagos/cancelar-venta`, {
           ventaId,
         });
 

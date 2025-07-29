@@ -8,13 +8,13 @@ export default function Register() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const API_URL = process.env.REACT_APP_API_URL;
+  const API_URL = import.meta.env.VITE_API_URL;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      await axios.post(`${API_URL}/api/auth/register`, { nombre, correo, password });
+      await axios.post(`${API_URL}/auth/register`, { nombre, correo, password });
       alert('Registro exitoso. Ahora puedes iniciar sesión.');
       navigate('/login');
     } catch (err) {

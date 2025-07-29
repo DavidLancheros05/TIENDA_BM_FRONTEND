@@ -1,7 +1,6 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import { CarritoContext } from '../context/CarritoContext';
 
 const ListadoProductos = ({ tipo }) => {
   const [productos, setProductos] = useState([]);
@@ -14,7 +13,7 @@ const ListadoProductos = ({ tipo }) => {
       setLoading(true);
       try {
         const res = await axios.get(
-          `${process.env.REACT_APP_API_URL}/api/productos?tipoProducto=${tipo}`
+          `${import.meta.env.VITE_API_URL}/productos?tipoProducto=${tipo}`
         );
         setProductos(res.data);
       } catch (err) {
@@ -70,7 +69,7 @@ const ListadoProductos = ({ tipo }) => {
                       src={
                         producto.imagenes[0].url.startsWith('http')
                           ? producto.imagenes[0].url
-                          : `${process.env.REACT_APP_API_URL}${producto.imagenes[0].url}`
+                          : `${import.meta.env.VITE_API_URL}${producto.imagenes[0].url}`
                       }
                       alt={producto.nombre}
                       className="card-img-top"

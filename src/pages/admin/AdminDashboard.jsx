@@ -1,61 +1,42 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaBoxOpen, FaClipboardList, FaWarehouse, FaTools } from 'react-icons/fa';
-
-function Card({ title, description, icon, onClick }) {
-  return (
-    <div className="min-w-[16rem] max-w-[16rem] bg-white border border-gray-200 shadow-md rounded-xl px-4 py-4 hover:shadow-lg transition flex flex-col justify-between">
-      <div className="flex items-center gap-3 mb-3">
-        <div className="text-3xl text-orange-500">{icon}</div>
-        <h3 className="text-lg font-bold text-gray-800">{title}</h3>
-      </div>
-      <p className="text-sm text-gray-600 mb-4">{description}</p>
-      <button
-        onClick={onClick}
-        className="bg-yellow-400 text-white px-4 py-2 rounded-md hover:bg-yellow-500 transition self-start"
-      >
-        Ir
-      </button>
-    </div>
-  );
-}
+import { BarChart3, Package, Users, ShoppingCart, Settings, MessageSquare, DollarSign, Megaphone } from 'lucide-react';
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
 
-  return (
-    <div className="bg-white text-gray-900 py-10 px-4 sm:px-10 min-h-screen">
-      <h2 className="text-3xl font-bold mb-10 text-center flex items-center justify-center gap-2">
-        <span role="img" aria-label="panel">📊</span> Panel de Administración
-      </h2>
+  const opciones = [
+    { nombre: 'Productos', icono: <Package className="w-5 h-5" />, ruta: '/admin/productos' },
+    { nombre: 'Ventas', icono: <ShoppingCart className="w-5 h-5" />, ruta: '/admin/ventas' },
+    { nombre: 'Inventario', icono: <BarChart3 className="w-5 h-5" />, ruta: '/admin/inventario' },
+    { nombre: 'Configuración', icono: <Settings className="w-5 h-5" />, ruta: '/admin/configuracion' },
+    { nombre: 'Usuarios', icono: <Users className="w-5 h-5" />, ruta: '/admin/usuarios' },
+    { nombre: 'Reseñas', icono: <MessageSquare className="w-5 h-5" />, ruta: '/admin/resenas' },
+    { nombre: 'Finanzas', icono: <DollarSign className="w-5 h-5" />, ruta: '/admin/finanzas' },
+    { nombre: 'Marketing', icono: <Megaphone className="w-5 h-5" />, ruta: '/admin/marketing' },
+  ];
 
-      {/* Scroll horizontal de tarjetas */}
-      <div className="flex overflow-x-auto gap-6 pb-4 px-2">
-        <Card
-          title="Productos"
-          description="Crea, edita y elimina productos de la tienda."
-          icon={<FaBoxOpen />}
-          onClick={() => navigate('/admin/productos')}
-        />
-        <Card
-          title="Ventas"
-          description="Consulta todas las ventas realizadas."
-          icon={<FaClipboardList />}
-          onClick={() => navigate('/admin/ventas')}
-        />
-        <Card
-          title="Inventario"
-          description="Gestiona el stock y las existencias."
-          icon={<FaWarehouse />}
-          onClick={() => navigate('/admin/inventario')}
-        />
-        <Card
-          title="Otros"
-          description="Opciones adicionales y futuras funciones."
-          icon={<FaTools />}
-          onClick={() => alert('Función no implementada')}
-        />
+  return (
+    <div className="min-h-screen flex flex-col items-center bg-gray-50">
+      <h1 className="text-3xl font-bold mt-6 flex items-center gap-2">
+        <BarChart3 className="text-blue-500 w-8 h-8" />
+        Panel de Administración
+      </h1>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mt-10 px-4 w-full max-w-6xl">
+        {opciones.map((opcion) => (
+          <button
+            key={opcion.nombre}
+            onClick={() => navigate(opcion.ruta)}
+            className="flex items-center gap-2 justify-center bg-yellow-400 hover:bg-yellow-500 text-black py-4 px-6 rounded-xl shadow-md font-medium text-lg transition"
+          >
+            {opcion.icono}
+            {opcion.nombre}
+          </button>
+        ))}
       </div>
+
+     
     </div>
   );
 }

@@ -5,6 +5,10 @@ import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
+const url = `${import.meta.env.VITE_API_URL}/productos`;
+//console.log("daviddddd",url)
+//console.log("🔧 API_URL:", import.meta.env.VITE_API_URL);
+//console.log("✅ Axios baseURL:", import.meta.env.VITE_API_URL);
 const imagenes = [
   '/img/bike1.jpg',
   '/img/bike2.jpg',

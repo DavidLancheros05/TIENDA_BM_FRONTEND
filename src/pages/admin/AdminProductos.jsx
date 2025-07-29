@@ -19,14 +19,15 @@ export default function AdminProductos() {
     tallas: "",
   });
 
-  const API_URL = process.env.REACT_APP_API_URL;
+  const API_URL = import.meta.env.VITE_API_URL;
+console.log("daviddddd",VITE_API_URL)
 
   useEffect(() => {
     fetchProductos();
   }, []);
 
   const fetchProductos = async () => {
-    const res = await axios.get(`${API_URL}/api/productos?admin=true`);
+    const res = await axios.get(`${API_URL}/productos?admin=true`);
     setProductos(res.data);
   };
 
@@ -58,14 +59,14 @@ export default function AdminProductos() {
       colores: formData.colores.split(",").map(c => c.trim()),
       tallas: formData.tallas.split(",").map(t => t.trim()),
     };
-    await axios.put(`${API_URL}/api/productos/${editandoId}`, actualizado);
+    await axios.put(`${API_URL}/productos/${editandoId}`, actualizado);
     setEditandoId(null);
     fetchProductos();
   };
 
   const handleEliminar = async (id) => {
     if (!window.confirm("¿Eliminar este producto?")) return;
-    await axios.delete(`${API_URL}/api/productos/${id}`);
+    await axios.delete(`${API_URL}/productos/${id}`);
     fetchProductos();
   };
 
@@ -92,7 +93,7 @@ export default function AdminProductos() {
       colores: nuevoProducto.colores.split(",").map(c => c.trim()),
       tallas: nuevoProducto.tallas.split(",").map(t => t.trim()),
     };
-    await axios.post(`${API_URL}/api/productos`, nuevo);
+    await axios.post(`${API_URL}/productos`, nuevo);
     setNuevoProducto({
       nombre: "",
       descripcion: "",

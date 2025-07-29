@@ -11,7 +11,7 @@ console.log('✅ carrito:', carrito);
     const totalEnCentavos = Math.round(total * 100); // Wompi requiere valor en centavos
 
     const BASE_FRONTEND_URL = window.location.origin;
-    const API_URL = process.env.REACT_APP_API_URL;
+    const API_URL = import.meta.env.VITE_API_URL;
 
     const datosPago = {
       name: "Pago de compra en Col_Bog_Bike",
@@ -27,8 +27,8 @@ console.log('✅ carrito:', carrito);
     console.log("📦 Payload enviado:\n", datosPago);
 
     try {
-      console.log("🚀 Enviando solicitud a backend:", `${API_URL}/api/pagos/crear-link-pago`);
-      const response = await axios.post(`${API_URL}/api/pagos/crear-link-pago`, datosPago);
+      console.log("🚀 Enviando solicitud a backend:", `${API_URL}/pagos/crear-link-pago`);
+      const response = await axios.post(`${API_URL}/pagos/crear-link-pago`, datosPago);
 
       console.log("✅ Respuesta del backend:", response.data);
       if (response.data && response.data.link_pago) {

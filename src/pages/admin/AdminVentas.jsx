@@ -9,7 +9,7 @@ function AdminVentas() {
   useEffect(() => {
     const fetchOrdenes = async () => {
       try {
-        const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/ordenes`);
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/ordenes`);
         setOrdenes(res.data);
       } catch (err) {
         console.error('❌ Error cargando órdenes:', err);

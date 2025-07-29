@@ -10,12 +10,12 @@ export default function Login() {
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const API_URL = process.env.REACT_APP_API_URL;
+  const API_URL = import.meta.env.VITE_API_URL;
 
   const handleSubmit = async e => {
   e.preventDefault();
   try {
-    const res = await axios.post(`${API_URL}/api/auth/login`, { correo, password });
+    const res = await axios.post(`${API_URL}/auth/login`, { correo, password });
     const { token, user } = res.data;
 
     const usuario = { ...user, token };

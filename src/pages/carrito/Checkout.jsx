@@ -1,4 +1,3 @@
-// src/pages/Checkout.jsx
 import React, { useContext } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -20,7 +19,7 @@ const schema = Yup.object().shape({
 });
 
 const Checkout = () => {
-  const { carrito, limpiarCarrito } = useContext(CarritoContext);
+  const { carrito, vaciarCarrito } = useContext(CarritoContext);
   const { usuario } = useContext(AuthContext);
 
   const {
@@ -52,11 +51,14 @@ const Checkout = () => {
       return;
     }
 
-    const ventaYLink = {
+    const ventaYLink = { // Se mantiene el nombre de la variable, aunque ahora es una Orden
       usuarioId: usuario._id || usuario.id,
       productos: carrito.map(item => ({
         producto: item.producto._id,
-        cantidad: item.cantidad
+        cantidad: item.cantidad,
+        color: item.color,
+        talla: item.talla,
+        precioUnitario: item.producto.precio // ✅ ¡IMPORTANTE! Añadido aquí
       })),
       total,
       metodoPago: "PSE",
@@ -72,17 +74,11 @@ const Checkout = () => {
     };
 
     try {
-      const API_URL = process.env.REACT_APP_API_URL;
-      console.log('✅ TOTAL calculado:', total);
-      console.log('✅ amount_in_cents:', ventaYLink.amount_in_cents);
-      console.log('📦 Payload enviado al backend:', JSON.stringify(ventaYLink, null, 2));
-      console.log('👉 Endpoint:', `${API_URL}/api/pagos/crear-link-pago`);
-
-      const response = await axios.post(`${API_URL}/api/pagos/crear-link-pago`, ventaYLink);
+      // const API_URL = import.meta.env.VITE_API_URL; // Asegúrate de que esto no esté duplicado o mal configurado
+      const response = await axios.post('/api/pagos/crear-link-pago', ventaYLink);
       const link = response.data?.link_pago;
 
       if (link) {
-        limpiarCarrito();
         window.location.href = link;
       } else {
         alert("No se pudo obtener el link de pago.");
@@ -139,17 +135,11 @@ const Checkout = () => {
 
         <div className="mb-3">
           <label>País</label>
-          <input
-            type="text"
-            className="form-control"
-            value="Colombia"
-            readOnly
-            {...register('pais')}
-          />
+          <input type="text" className="form-control" readOnly {...register('pais')} />
           {errors.pais && <p className="text-danger">{errors.pais.message}</p>}
         </div>
 
-        <h4 className="mt-4">Total a pagar: ${total.toFixed(2)}</h4>
+        <h4 className="mt-4">Total a pagar: ${total.toLocaleString()}</h4>
 
         <button type="submit" className="btn btn-success mt-3 w-100">
           💳 Pagar con PSE

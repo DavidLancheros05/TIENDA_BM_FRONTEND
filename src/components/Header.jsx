@@ -4,14 +4,14 @@ import { CarritoContext } from '../context/CarritoContext';
 import { AuthContext } from '../context/AuthContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
-
 const Header = () => {
   const { carrito } = useContext(CarritoContext);
   const { usuario, logout } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const totalItems = carrito.reduce((acc, item) => acc + item.cantidad, 0);
-
+const totalItems = Array.isArray(carrito)
+  ? carrito.reduce((acc, item) => acc + item.cantidad, 0)
+  : 0;
   const handleLogout = () => {
     logout();
     navigate('/');
@@ -20,7 +20,6 @@ const Header = () => {
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow">
       <div className="container-fluid">
-        {/* Logo + Nombre */}
         <Link className="navbar-brand d-flex align-items-center" to="/">
           <img
             src="/img/logo-colbogbike.jpg"
@@ -30,7 +29,6 @@ const Header = () => {
           <strong style={{ color: '#ffc107' }}>ColBogBike</strong>
         </Link>
 
-        {/* Botón hamburguesa para móviles */}
         <button
           className="navbar-toggler"
           type="button"
@@ -43,11 +41,10 @@ const Header = () => {
           <span className="navbar-toggler-icon"></span>
         </button>
 
-        {/* Menú colapsable */}
         <div className="collapse navbar-collapse" id="menuPrincipal">
           <ul className="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center gap-2">
 
-            {/* Inicio y productos */}
+            {/* Inicio, productos y sobre nosotros */}
             <div className="d-flex align-items-center gap-2">
               <li className="nav-item">
                 <Link className="nav-link text-warning" to="/">Inicio</Link>
@@ -61,15 +58,25 @@ const Header = () => {
               <li className="nav-item">
                 <Link className="nav-link text-warning" to="/accesorios">Accesorios</Link>
               </li>
+              <li className="nav-item">
+                <Link className="nav-link text-warning" to="/sobrenosotros">Sobre Nosotros</Link>
+              </li>
             </div>
 
-            {/* Separador */}
             <div className="vr mx-3 d-none d-lg-block" style={{ height: '30px' }}></div>
 
             {/* Carrito */}
-            <li className="nav-item">
-              <Link className="nav-link text-warning" to="/carrito">
-                🛒 ({totalItems})
+            <li className="nav-item position-relative">
+              <Link className="nav-link text-warning" to="/carrito" style={{ fontSize: '1.4rem' }}>
+                🛒
+                {totalItems > 0 && (
+                  <span
+                    className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                    style={{ fontSize: '0.7rem' }}
+                  >
+                    {totalItems}
+                  </span>
+                )}
               </Link>
             </li>
 
@@ -83,8 +90,16 @@ const Header = () => {
               </>
             )}
 
-            {/* Sesión */}
+            {/* Mis compras (solo si está logueado) */}
+            {usuario && (
+              <li className="nav-item">
+                <Link className="nav-link text-warning" to="/miscompras">Mis Compras</Link>
+              </li>
+            )}
+
             <div className="vr mx-3 d-none d-lg-block" style={{ height: '30px' }}></div>
+
+            {/* Sesión */}
             {!usuario ? (
               <div className="d-flex align-items-center gap-2">
                 <Link className="btn btn-outline-warning" to="/login">

@@ -1,63 +1,43 @@
 {
-  "name": "client",
-  "version": "0.1.0",
+  "name": "tienda-bicis-frontend",
   "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
   "dependencies": {
-    "@dnd-kit/core": "^6.3.1",
-    "@dnd-kit/modifiers": "^9.0.0",
-    "@dnd-kit/sortable": "^10.0.0",
-    "@fortawesome/fontawesome-free": "^6.7.2",
-    "@hookform/resolvers": "^5.1.1",
-    "@testing-library/dom": "^10.4.0",
-    "@testing-library/jest-dom": "^6.6.3",
-    "@testing-library/react": "^16.3.0",
-    "@testing-library/user-event": "^14.6.1",
-    "axios": "^1.9.0",
-    "bootstrap": "^5.3.6",
+    "@fortawesome/fontawesome-free": "^7.0.0",
+    "@hookform/resolvers": "^5.2.0",
+    "axios": "^1.11.0",
+    "bootstrap": "^5.3.7",
     "framer-motion": "^12.23.9",
-    "jwt-decode": "^4.0.0",
     "lucide-react": "^0.526.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "react-dropzone": "^14.3.8",
-    "react-hook-form": "^7.61.0",
-    "react-icons": "^5.5.0",
-    "react-router-dom": "^7.6.2",
-    "react-scripts": "5.0.1",
+    "react-hook-form": "^7.61.1",
+    "react-router-dom": "^7.7.1",
     "react-slick": "^0.30.3",
-    "react-sortablejs": "^6.1.4",
     "slick-carousel": "^1.8.1",
-    "sortablejs": "^1.15.6",
-    "web-vitals": "^5.0.2",
     "yup": "^1.6.1"
   },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
   "devDependencies": {
+    "@eslint/js": "^9.30.1",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "@vitejs/plugin-react": "^4.6.0",
     "autoprefixer": "^10.4.21",
-    "postcss": "^8.5.5",
-    "tailwindcss": "^4.1.10"
+    "eslint": "^9.30.1",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.20",
+    "globals": "^16.3.0",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.11",
+    "typescript": "~5.8.3",
+    "typescript-eslint": "^8.35.1",
+    "vite": "^7.0.4"
   }
 }

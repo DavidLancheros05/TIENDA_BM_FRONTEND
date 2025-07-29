@@ -1,33 +1,27 @@
-// src/components/BotonWhatsApp.jsx
 import React from 'react';
-
+const numero = import.meta.env.REACT_APP_NUMERO_WHATSAPP;
+const enlace = `https://wa.me/${numero}`;
+console.log("Número de WhatsApp:", numero);
 const BotonWhatsApp = () => {
-  const numero = '573001112233'; // <-- Cambia este número al de Col_Bog_Bike
-  const mensaje = '¡Hola! Estoy interesado en una bicicleta. ¿Me puedes ayudar?';
-
   return (
     <a
-      href={`https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`}
-      className="whatsapp-button"
+      href={enlace}
       target="_blank"
       rel="noopener noreferrer"
-      aria-label="Contáctanos por WhatsApp"
+      style={{
+        position: 'fixed',
+        bottom: '20px',
+        right: '20px',
+        backgroundColor: '#25D366',
+        color: 'white',
+        borderRadius: '50%',
+        padding: '15px',
+        fontSize: '24px',
+        zIndex: 1000,
+        boxShadow: '0 4px 6px rgba(0,0,0,0.2)'
+      }}
     >
-      <img
-        src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
-        alt="WhatsApp"
-        style={{
-          width: '55px',
-          height: '55px',
-          position: 'fixed',
-          bottom: '25px',
-          right: '25px',
-          zIndex: '1000',
-          cursor: 'pointer',
-          borderRadius: '50%',
-          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
-        }}
-      />
+      <i className="fab fa-whatsapp"></i>
     </a>
   );
 };

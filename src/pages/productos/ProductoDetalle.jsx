@@ -18,39 +18,30 @@ const ProductoDetalle = () => {
   const [estrellas, setEstrellas] = useState(5);
   const [comentario, setComentario] = useState('');
   const token = localStorage.getItem('token');
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
-    axios.get(`${apiUrl}/api/productos/${id}`)
+    axios.get(`${apiUrl}/productos/${id}`)
       .then(res => {
         setProducto(res.data);
         if (res.data.colores?.length > 0) setColorSeleccionado(res.data.colores[0]);
         if (res.data.tallas?.length > 0) setTallaSeleccionada(res.data.tallas[0]);
-
-        return axios.get(`${apiUrl}/api/resenas/${res.data._id}`);
+        return axios.get(`${apiUrl}/resenas/${res.data._id}`);
       })
       .then(resResenas => setResenas(resResenas.data))
       .catch(err => {
         console.error('❌ Error cargando producto:', err);
         setProducto(null);
       });
-  }, [id]);
+  }, [id, apiUrl]); // ✅ incluimos apiUrl
 
-  const handleAgregar = () => {
-    console.log('🟢 Añadiendo al carrito:', {
-      producto: producto,
-      cantidad: cantidad,
-      color: colorSeleccionado,
-      talla: tallaSeleccionada,
-    });
-
-    agregarAlCarrito({
-      producto: producto,
-      cantidad: cantidad,
-      color: colorSeleccionado,
-      talla: tallaSeleccionada,
-    });
-  };
+const handleAgregar = () => {
+  console.log("....");
+  console.log("....");
+  console.log("....");
+  console.log('🛒 Añadiendo al carrito:', { producto, cantidad, colorSeleccionado, tallaSeleccionada });
+  agregarAlCarrito(producto, cantidad, colorSeleccionado, tallaSeleccionada);
+};
 
   const handleComprarAhora = () => {
     handleAgregar();
@@ -71,7 +62,7 @@ const ProductoDetalle = () => {
     if (!token) return navigate('/login');
 
     await axios.post(
-      `${apiUrl}/api/productos/${producto._id}/resena`,
+      `${apiUrl}/productos/${producto._id}/resena`,
       { estrellas, comentario },
       { headers: { Authorization: `Bearer ${token}` } }
     );
@@ -79,9 +70,9 @@ const ProductoDetalle = () => {
     setComentario('');
     setEstrellas(5);
 
-    const res = await axios.get(`${apiUrl}/api/productos/${producto._id}`);
+    const res = await axios.get(`${apiUrl}/productos/${producto._id}`);
     setProducto(res.data);
-    setResenas((await axios.get(`${apiUrl}/api/resenas/${producto._id}`)).data);
+    setResenas((await axios.get(`${apiUrl}/resenas/${producto._id}`)).data);
   };
 
   if (!producto) {
@@ -99,110 +90,104 @@ const ProductoDetalle = () => {
   };
 
   return (
-    <div className="container py-5">
-      <div className="row mb-5">
-        {/* IZQUIERDA: Galería */}
-        <div className="col-md-4">
+    <div className="container py-4">
+      <h2 className="mb-4">{producto.nombre}</h2>
+
+      <div className="d-flex flex-wrap gap-3">
+        {/* Columna izquierda */}
+        <div className="flex-grow-1 p-3 shadow rounded" style={{ backgroundColor: '#e3f2fd', minWidth: '60%' }}>
           <GaleriaImagenes
             imagenes={producto.imagenes?.length > 0 ? producto.imagenes : [producto.imagen]}
             getImagenUrl={getImagenUrl}
           />
-        </div>
 
-        {/* CENTRO: Info */}
-        <div className="col-md-5">
-          <h2 className="mb-2">{producto.nombre}</h2>
-          <p><strong>Marca:</strong> {producto.marca}</p>
-          <p><strong>Categoría:</strong> {producto.categoria}</p>
-          <p><strong>Tipo:</strong> {producto.tipoProducto}</p>
-          <p><strong>Descripción:</strong> {producto.descripcion}</p>
+          <div className="row mt-4">
+            <div className="row">
+              {/* Columna 1 */}
+              <div className="col-md-4 mb-4">
+                <p><strong>Marca:</strong> {producto.marca}</p>
+                <p><strong>Categoría:</strong> {producto.categoria}</p>
+                <p><strong>Stock:</strong> {producto.stock > 0 ? `Disponible (${producto.stock})` : 'Agotado'}</p>
+                {producto.precioOriginal && producto.precioOriginal > producto.precio && (
+                  <p>
+                    <span className="text-muted text-decoration-line-through">
+                      ${producto.precioOriginal.toLocaleString('es-CO')}
+                    </span>{' '}
+                    {producto.descuento?.porcentaje && (
+                      <span className="badge bg-danger ms-2">
+                        -{producto.descuento.porcentaje}%
+                      </span>
+                    )}
+                  </p>
+                )}
+                <h4 className="text-success">
+                  ${producto.precio.toLocaleString('es-CO')}
+                </h4>
+              </div>
 
-          <p><strong>Colores disponibles:</strong></p>
-          {producto.colores?.length > 0 ? (
-            <select
-              className="form-select mb-3"
-              value={colorSeleccionado}
-              onChange={(e) => setColorSeleccionado(e.target.value)}
-            >
-              {producto.colores.map((color, idx) => (
-                <option key={idx} value={color}>{color}</option>
-              ))}
-            </select>
-          ) : (
-            <p>No hay colores.</p>
-          )}
+              {/* Columna 2 */}
+              <div className="col-md-4 mb-4">
+                <label><strong>Color:</strong></label>
+                <select className="form-select mb-3" value={colorSeleccionado} onChange={e => setColorSeleccionado(e.target.value)}>
+                  {producto.colores?.map((color, idx) => (
+                    <option key={idx} value={color}>{color}</option>
+                  ))}
+                </select>
 
-          <p><strong>Tallas disponibles:</strong></p>
-          {producto.tallas?.length > 0 ? (
-            <select
-              className="form-select mb-3"
-              value={tallaSeleccionada}
-              onChange={(e) => setTallaSeleccionada(e.target.value)}
-            >
-              {producto.tallas.map((talla, idx) => (
-                <option key={idx} value={talla}>{talla}</option>
-              ))}
-            </select>
-          ) : (
-            <p>No hay tallas.</p>
-          )}
+                <label><strong>Talla:</strong></label>
+                <select className="form-select mb-3" value={tallaSeleccionada} onChange={e => setTallaSeleccionada(e.target.value)}>
+                  {producto.tallas?.map((talla, idx) => (
+                    <option key={idx} value={talla}>{talla}</option>
+                  ))}
+                </select>
+              </div>
 
-          <p><strong>Calificación:</strong> {renderEstrellas(producto.promedioEstrellas)}</p>
-          {producto.precioOriginal && producto.precioOriginal > producto.precio && (
-            <p>
-              <span className="text-muted text-decoration-line-through">
-                ${producto.precioOriginal.toLocaleString('es-CO')}
-              </span>{' '}
-              {producto.descuento?.porcentaje && (
-                <span className="badge bg-danger ms-2">
-                  -{producto.descuento.porcentaje}%
-                </span>
-              )}
-            </p>
-          )}
-          <h4 className="text-success">${producto.precio.toLocaleString('es-CO')}</h4>
-        </div>
+              {/* Columna 3 */}
+              <div className="col-md-4 mb-4">
+                <p><strong>Precio total:</strong> ${producto.precio.toLocaleString('es-CO')}</p>
+                <label><strong>Cantidad:</strong></label>
+                <div className="d-flex align-items-center mb-3" style={{ gap: '0.5rem' }}>
+                  <button className="btn btn-outline-secondary" onClick={() => cantidad > 1 && setCantidad(cantidad - 1)}>-</button>
+                  <input type="number" className="form-control text-center" value={cantidad} readOnly style={{ width: '60px' }} />
+                  <button className="btn btn-outline-secondary" onClick={() => cantidad < producto.stock && setCantidad(cantidad + 1)}>+</button>
+                </div>
 
-        {/* DERECHA: Compra */}
-        <div className="col-md-3">
-          <div className="border rounded p-4 bg-light">
-            <h4 className="mb-3">🛒 Comprar</h4>
-            <p><strong>Precio:</strong> ${producto.precio.toLocaleString('es-CO')}</p>
-            <p><strong>Stock:</strong> {producto.stock > 0 ? `Disponible (${producto.stock})` : 'Agotado'}</p>
-            <label><strong>Cantidad:</strong></label>
+                <div className="d-grid gap-2">
+                  
 
-            <div className="input-group mb-3" style={{ maxWidth: '120px' }}>
-              <button className="btn btn-outline-secondary" onClick={() => cantidad > 1 && setCantidad(cantidad - 1)}>-</button>
-              <input
-                type="number"
-                className="form-control text-center"
-                value={cantidad}
-                readOnly
-              />
-              <button className="btn btn-outline-secondary" onClick={() => cantidad < producto.stock && setCantidad(cantidad + 1)}>+</button>
-            </div>
-
-            <div className="d-flex flex-column gap-2">
-              <button
-                className="btn btn-primary"
-                disabled={producto.stock === 0}
-                onClick={handleAgregar}
-              >
-                🛒 Añadir al carrito
-              </button>
-              <button
-                className="btn btn-success"
-                disabled={producto.stock === 0}
-                onClick={handleComprarAhora}
-              >
-                💳 Comprar ahora
-              </button>
+                  <button
+                    className="btn btn-success fw-bold"
+                    disabled={producto.stock === 0}
+                    onClick={handleComprarAhora}
+                  >
+                    ⚡ Comprar ahora
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
+        </div>
+
+        {/* Columna derecha */}
+        <div className="p-3 bg-light border rounded shadow-sm" style={{ minWidth: '280px', maxWidth: '400px', flex: '1' }}>
+          <h5 className="mb-3"><strong>Descripción:</strong></h5>
+          <ul className="list-unstyled">
+            {producto.descripcion.split('-').map((item, index) => {
+              const texto = item.trim();
+              const capitalizado = texto.charAt(0).toUpperCase() + texto.slice(1);
+              return texto ? (
+                <li key={index} className="mb-2">
+                  <span style={{ color: 'red', marginRight: '0.5rem' }}>‣</span>
+                  {capitalizado}
+                </li>
+              ) : null;
+            })}
+          </ul>
         </div>
       </div>
 
       <hr className="my-5" />
+      <p><strong>Calificación:</strong> {renderEstrellas(producto.promedioEstrellas)}</p>
       <h4 className="mb-4">📝 Opiniones y reseñas</h4>
       <ResenasProducto resenas={resenas} renderEstrellas={renderEstrellas} />
       <ResenaForm
