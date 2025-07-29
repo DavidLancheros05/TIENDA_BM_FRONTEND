@@ -1,24 +1,24 @@
+// renombrar-jsx-a-tsx.cjs
 const fs = require('fs');
 const path = require('path');
 
-const baseDir = path.join(__dirname, 'src');
+const directorio = path.resolve('./src');
 
-function renameJSXtoTSX(dir) {
-  const items = fs.readdirSync(dir);
+function renombrarArchivos(dir) {
+  const entradas = fs.readdirSync(dir, { withFileTypes: true });
 
-  for (const item of items) {
-    const fullPath = path.join(dir, item);
-    const stats = fs.statSync(fullPath);
+  for (const entrada of entradas) {
+    const rutaCompleta = path.join(dir, entrada.name);
 
-    if (stats.isDirectory()) {
-      renameJSXtoTSX(fullPath);
-    } else if (item.endsWith('.jsx')) {
-      const newPath = fullPath.replace(/\.jsx$/, '.tsx');
-      fs.renameSync(fullPath, newPath);
-      console.log(`✅ Renombrado: ${fullPath} -> ${newPath}`);
+    if (entrada.isDirectory()) {
+      renombrarArchivos(rutaCompleta);
+    } else if (entrada.isFile() && entrada.name.endsWith('.jsx')) {
+      const nuevaRuta = rutaCompleta.replace(/\.jsx$/, '.tsx');
+      fs.renameSync(rutaCompleta, nuevaRuta);
+      console.log(`✅ Renombrado: ${rutaCompleta} → ${nuevaRuta}`);
     }
   }
 }
 
-renameJSXtoTSX(baseDir);
-console.log('\n🎉 Archivos renombrados de .jsx a .tsx');
+renombrarArchivos(directorio);
+console.log('\n🎉 Todos los archivos .jsx han sido renombrados a .tsx');
