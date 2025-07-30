@@ -9,6 +9,7 @@ import { ResenaForm } from '../../components/producto/ResenaForm';
 const ProductoDetalle = () => {
     const { id } = useParams();
     const [producto, setProducto] = useState(null);
+    // La cantidad se inicializa siempre en 1, sin importar el stock
     const [cantidad, setCantidad] = useState(1);
     const [colorSeleccionado, setColorSeleccionado] = useState('');
     const [tallaSeleccionada, setTallaSeleccionada] = useState('');
@@ -42,7 +43,8 @@ const ProductoDetalle = () => {
 
                 if (productResponse.data.colores?.length > 0) setColorSeleccionado(productResponse.data.colores[0]);
                 if (productResponse.data.tallas?.length > 0) setTallaSeleccionada(productResponse.data.tallas[0]);
-                setCantidad(productResponse.data.stock > 0 ? 1 : 0);
+                // La cantidad se inicializa siempre en 1, sin importar el stock
+                setCantidad(1);
 
                 const reviewsResponse = await axios.get(`${apiUrl}/resenas/${productResponse.data._id}`);
                 setResenas(reviewsResponse.data);
@@ -65,9 +67,6 @@ const ProductoDetalle = () => {
 
     // --- DEFINICIÓN DE FUNCIONES ---
     const handleAgregar = () => {
-        console.log("....");
-        console.log("....");
-        console.log("....");
         console.log('🛒 Añadiendo al carrito:', { producto, cantidad, colorSeleccionado, tallaSeleccionada });
         agregarAlCarrito(producto, cantidad, colorSeleccionado, tallaSeleccionada);
     };
@@ -173,7 +172,8 @@ const ProductoDetalle = () => {
                             <div className="col-md-4 mb-4">
                                 <p><strong>Marca:</strong> {producto.marca}</p>
                                 <p><strong>Categoría:</strong> {producto.categoria}</p>
-                                <p><strong>Stock:</strong> {producto.stock > 0 ? `Disponible (${producto.stock})` : 'Agotado'}</p>
+                                {/* Ya no se muestra el stock como "Disponible (X)" */}
+                                <p><strong>Estado:</strong> {producto.stock > 0 ? 'Disponible' : 'Agotado'}</p>
                                 {producto.precioOriginal && producto.precioOriginal > producto.precio && (
                                     <p>
                                         <span className="text-muted text-decoration-line-through">
@@ -216,12 +216,8 @@ const ProductoDetalle = () => {
                                     <button
                                         className="btn btn-outline-secondary"
                                         onClick={() => {
-                                            console.log(`Debug: Clicked Minus. Cantidad antes: ${cantidad}`);
                                             if (cantidad > 1) {
                                                 setCantidad(cantidad - 1);
-                                                console.log(`Debug: Cantidad después (Minus): ${cantidad - 1}`);
-                                            } else {
-                                                console.log('Debug: Cantidad ya es 1, no se puede disminuir más.');
                                             }
                                         }}
                                     >-</button>
@@ -229,13 +225,8 @@ const ProductoDetalle = () => {
                                     <button
                                         className="btn btn-outline-secondary"
                                         onClick={() => {
-                                            console.log(`Debug: Clicked Plus. Cantidad antes: ${cantidad}, Stock: ${producto.stock}`);
-                                            if (cantidad < producto.stock) {
-                                                setCantidad(cantidad + 1);
-                                                console.log(`Debug: Cantidad después (Plus): ${cantidad + 1}`);
-                                            } else {
-                                                console.log('Debug: Cantidad alcanzó el stock máximo o stock es 0.');
-                                            }
+                                            // Ya no se limita por producto.stock
+                                            setCantidad(cantidad + 1);
                                         }}
                                     >+</button>
                                 </div>
@@ -243,7 +234,7 @@ const ProductoDetalle = () => {
                                 <div className="d-grid gap-2">
                                     <button
                                         className="btn btn-primary fw-bold"
-                                        disabled={producto.stock === 0 || cantidad === 0}
+                                        // Los botones ya no se deshabilitan por stock o cantidad 0
                                         onClick={handleAgregar}
                                     >
                                         🛒 Añadir al carrito
@@ -251,7 +242,7 @@ const ProductoDetalle = () => {
 
                                     <button
                                         className="btn btn-success fw-bold"
-                                        disabled={producto.stock === 0 || cantidad === 0}
+                                        // Los botones ya no se deshabilitan por stock o cantidad 0
                                         onClick={handleComprarAhora}
                                     >
                                         ⚡ Comprar ahora
