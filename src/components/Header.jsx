@@ -10,26 +10,24 @@ const Header = () => {
   const { usuario, logout } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const totalItems = Array.isArray(carrito)
-    ? carrito.reduce((acc, item) => acc + item.cantidad, 0)
-    : 0;
+  // Cerrar menú al hacer clic en un enlace
+  useEffect(() => {
+    const links = document.querySelectorAll('.nav-link');
+    const collapseMenu = () => {
+      const menu = document.getElementById('menuPrincipal');
+      const isOpen = menu?.classList.contains('show');
+      if (isOpen) {
+        const toggler = document.querySelector('.navbar-toggler') as HTMLElement;
+        toggler?.click();
+      }
+    };
+    links.forEach(link => link.addEventListener('click', collapseMenu));
+    return () => {
+      links.forEach(link => link.removeEventListener('click', collapseMenu));
+    };
+  }, []);
 
-  const handleLogout = () => {
-    logout();
-    navigate('/');
-    closeMenu();
-  };
-
-  // Cierra el menú hamburguesa si está abierto
-  const closeMenu = () => {
-    const menu = document.getElementById('menuPrincipal');
-    if (menu?.classList.contains('show')) {
-      const toggler = document.querySelector('.navbar-toggler') as HTMLElement;
-      toggler?.click();
-    }
-  };
-
-  // Detecta scroll hacia abajo y cierra el menú si está abierto
+  // Cerrar menú si se hace scroll hacia abajo
   useEffect(() => {
     let lastScrollTop = window.scrollY;
 
@@ -42,7 +40,7 @@ const Header = () => {
         const isOpen = menu?.classList.contains('show');
         if (isOpen) {
           const toggler = document.querySelector('.navbar-toggler') as HTMLElement;
-          toggler?.click();
+          toggler?.click(); // Cierra el menú
         }
       }
 
@@ -54,17 +52,9 @@ const Header = () => {
   }, []);
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow">
-      <div className="container-fluid">
-        <Link className="navbar-brand d-flex align-items-center" to="/" onClick={closeMenu}>
-          <img
-            src="/img/logo-colbogbike.jpg"
-            alt="ColBogBike Logo"
-            style={{ width: '40px', marginRight: '10px' }}
-          />
-          <strong className="text-warning">ColBogBike</strong>
-        </Link>
-
+    <nav className="navbar navbar-expand-lg navbar-light bg-light fixed-top shadow-sm">
+      <div className="container">
+        <Link className="navbar-brand" to="/">Col_Bog_Bike</Link>
         <button
           className="navbar-toggler"
           type="button"
@@ -78,71 +68,38 @@ const Header = () => {
         </button>
 
         <div className="collapse navbar-collapse" id="menuPrincipal">
-          <ul className="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center w-100 gap-2">
-            <div className="d-lg-flex flex-lg-row gap-2 w-100 justify-content-lg-start">
-              <li className="nav-item">
-                <Link className="nav-link text-warning" to="/" onClick={closeMenu}>Inicio</Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link text-warning" to="/bicicletas" onClick={closeMenu}>Bicicletas</Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link text-warning" to="/bicicletaselectrica" onClick={closeMenu}>Eléctricas</Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link text-warning" to="/accesorios" onClick={closeMenu}>Accesorios</Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link text-warning" to="/sobrenosotros" onClick={closeMenu}>Sobre Nosotros</Link>
-              </li>
-            </div>
-
-            <div className="vr mx-3 d-none d-lg-block" style={{ height: '30px' }}></div>
-
-            <li className="nav-item position-relative">
-              <Link className="nav-link text-warning" to="/carrito" onClick={closeMenu} style={{ fontSize: '1.4rem' }}>
-                🛒
-                {totalItems > 0 && (
-                  <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style={{ fontSize: '0.7rem' }}>
-                    {totalItems}
-                  </span>
-                )}
+          <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
+            <li className="nav-item">
+              <Link className="nav-link" to="/productos">Productos</Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/sobre-nosotros">Sobre Nosotros</Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/carrito">
+                Carrito ({carrito.length})
               </Link>
             </li>
-
-            {usuario?.rol === 'admin' && (
+            {usuario ? (
               <>
-                <div className="vr mx-3 d-none d-lg-block" style={{ height: '30px' }}></div>
+                {usuario.rol === 'admin' && (
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/admin">Panel Admin</Link>
+                  </li>
+                )}
                 <li className="nav-item">
-                  <Link className="nav-link text-warning" to="/adminDashboard" onClick={closeMenu}>Panel</Link>
+                  <button className="btn btn-link nav-link" onClick={logout}>Cerrar sesión</button>
                 </li>
               </>
-            )}
-
-            {usuario && (
-              <li className="nav-item">
-                <Link className="nav-link text-warning" to="/miscompras" onClick={closeMenu}>Mis Compras</Link>
-              </li>
-            )}
-
-            <div className="vr mx-3 d-none d-lg-block" style={{ height: '30px' }}></div>
-
-            {!usuario ? (
-              <div className="d-flex flex-column flex-lg-row align-items-start align-items-lg-center gap-2">
-                <Link className="btn btn-outline-warning w-100 w-lg-auto" to="/login" onClick={closeMenu}>
-                  Iniciar sesión
-                </Link>
-                <Link className="btn btn-warning w-100 w-lg-auto" to="/register" onClick={closeMenu}>
-                  Registrarse
-                </Link>
-              </div>
             ) : (
-              <div className="d-flex flex-column flex-lg-row align-items-start align-items-lg-center gap-2 ms-2">
-                <span className="nav-item text-white">👋 Hola, {usuario.nombre}</span>
-                <button onClick={handleLogout} className="btn btn-danger w-100 w-lg-auto">
-                  Cerrar sesión
-                </button>
-              </div>
+              <>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/login">Iniciar sesión</Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/registro">Registrarse</Link>
+                </li>
+              </>
             )}
           </ul>
         </div>
