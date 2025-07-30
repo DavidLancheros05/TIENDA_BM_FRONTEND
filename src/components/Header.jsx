@@ -20,23 +20,33 @@ const Header = () => {
     closeMenu();
   };
 
+  // Cierra el menú hamburguesa si está abierto
   const closeMenu = () => {
     const menu = document.getElementById('menuPrincipal');
     if (menu?.classList.contains('show')) {
       const toggler = document.querySelector('.navbar-toggler') as HTMLElement;
-      toggler?.click(); // Simula clic para cerrarlo
+      toggler?.click();
     }
   };
 
-  // Cierra el menú al hacer scroll
+  // Detecta scroll hacia abajo y cierra el menú si está abierto
   useEffect(() => {
-    let lastScrollTop = 0;
+    let lastScrollTop = window.scrollY;
+
     const handleScroll = () => {
-      const current = window.scrollY;
-      if (current > lastScrollTop) {
-        closeMenu();
+      const currentScrollTop = window.scrollY;
+      const goingDown = currentScrollTop > lastScrollTop;
+
+      if (goingDown) {
+        const menu = document.getElementById('menuPrincipal');
+        const isOpen = menu?.classList.contains('show');
+        if (isOpen) {
+          const toggler = document.querySelector('.navbar-toggler') as HTMLElement;
+          toggler?.click();
+        }
       }
-      lastScrollTop = current;
+
+      lastScrollTop = currentScrollTop;
     };
 
     window.addEventListener('scroll', handleScroll);
