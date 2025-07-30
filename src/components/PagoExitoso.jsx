@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { CarritoContext } from '../context/CarritoContext';
 import { AuthContext } from '../context/AuthContext';
-import api from '../services/axios'; // Importa tu instancia 'api'
+import api from '../services/api'; // Importa tu instancia 'api'
 
 const PagoExitoso = () => {
     const location = useLocation();

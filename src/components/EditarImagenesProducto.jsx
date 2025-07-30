@@ -1,24 +1,23 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import axios from "axios";
-import ImageUploader from "./ImageUploader";
 
+import ImageUploader from "./ImageUploader";
+import api from "../services/api";
 export default function EditarImagenesProducto() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [imagenes, setImagenes] = useState([]);
-  const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const fetchProducto = async () => {
-      const res = await axios.get(`${API_URL}/productos/${id}`);
+      const res = await api.get(`/productos/${id}`);
       setImagenes(res.data.imagenes || []);
     };
     fetchProducto();
-  }, [id, API_URL]);
+  },[id]);
 
   const handleGuardar = async () => {
-    await axios.put(`${API_URL}/productos/${id}`, { imagenes });
+    await api.put(`/productos/${id}`, { imagenes });
     alert("Imágenes actualizadas!");
     navigate("/admin/productos"); // Redirige a la tabla
   };

@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import axios from 'axios'; // Importar axios para hacer las peticiones
 
-import api from '../services/axios'; // o desde la ruta correcta
+import api from '../services/api'; // o desde la ruta correcta
 
 
 const MisCompras = () => {

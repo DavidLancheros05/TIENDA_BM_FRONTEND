@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import api from "../../services/api"; // ajusta el path según tu estructura
 
 export default function AdminProductos() {
   const [productos, setProductos] = useState([]);
@@ -27,7 +27,7 @@ export default function AdminProductos() {
   }, []);
 
   const fetchProductos = async () => {
-    const res = await axios.get(`${API_URL}/productos?admin=true`);
+    const res = await api.get("/productos?admin=true"); // ✅
     setProductos(res.data);
   };
 
@@ -59,14 +59,14 @@ export default function AdminProductos() {
       colores: formData.colores.split(",").map(c => c.trim()),
       tallas: formData.tallas.split(",").map(t => t.trim()),
     };
-    await axios.put(`${API_URL}/productos/${editandoId}`, actualizado);
+    await api.put(`/productos/${editandoId}`, actualizado); // ✅
     setEditandoId(null);
     fetchProductos();
   };
 
   const handleEliminar = async (id) => {
     if (!window.confirm("¿Eliminar este producto?")) return;
-    await axios.delete(`${API_URL}/productos/${id}`);
+    await api.post("/productos", nuevo); // ✅
     fetchProductos();
   };
 

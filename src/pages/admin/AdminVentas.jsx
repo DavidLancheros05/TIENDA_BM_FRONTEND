@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+
+import api from "../../services/api"; // ajusta el path según tu estructura
 
 function AdminVentas() {
   const [ordenes, setOrdenes] = useState([]);
@@ -9,7 +10,7 @@ function AdminVentas() {
   useEffect(() => {
     const fetchOrdenes = async () => {
       try {
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/ordenes`);
+        const res = await api.get(`/ordenes`);
         setOrdenes(res.data);
       } catch (err) {
         console.error('❌ Error cargando órdenes:', err);

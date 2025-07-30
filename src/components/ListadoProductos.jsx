@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { Link } from 'react-router-dom';
+import api from "../services/api"; // o "../../services/api" según la ruta
 
 const ListadoProductos = ({ tipo }) => {
   const [productos, setProductos] = useState([]);
@@ -12,9 +12,7 @@ const ListadoProductos = ({ tipo }) => {
     const fetchProductos = async () => {
       setLoading(true);
       try {
-        const res = await axios.get(
-          `${import.meta.env.VITE_API_URL}/productos?tipoProducto=${tipo}`
-        );
+        const res = await api.get(`/productos?tipoProducto=${tipo}`);
         setProductos(res.data);
       } catch (err) {
         console.error(`❌ Error al obtener ${tipo}s:`, err);
