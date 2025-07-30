@@ -1,15 +1,17 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { CarritoContext } from '../context/CarritoContext';
 import { AuthContext } from '../context/AuthContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+// ¡Ya no necesitamos importar './Header.css'; aquí!
 
 const Header = () => {
   const { carrito } = useContext(CarritoContext);
   const { usuario, logout } = useContext(AuthContext);
   const location = useLocation();
   const [activePath, setActivePath] = useState(location.pathname);
+  const navbarTogglerRef = useRef<HTMLButtonElement>(null); // Referencia para el botón del menú
 
   useEffect(() => {
     setActivePath(location.pathname);
@@ -20,17 +22,15 @@ const Header = () => {
 
     const handleScroll = () => {
       const currentScrollTop = window.scrollY;
-      const goingDown = currentScrollTop > lastScrollTop;
+      const menu = document.getElementById('menuPrincipal');
+      const isOpen = menu?.classList.contains('show');
 
-      if (goingDown) {
-        const menu = document.getElementById('menuPrincipal');
-        const isOpen = menu?.classList.contains('show');
-        if (isOpen) {
-          const toggler = document.querySelector('.navbar-toggler') as HTMLElement;
-          toggler?.click(); // Cierra el menú
+      // Si el menú está abierto Y la página se está scrollando (cambio de posición)
+      if (isOpen && currentScrollTop !== lastScrollTop) {
+        if (navbarTogglerRef.current) {
+          navbarTogglerRef.current.click(); // Cierra el menú
         }
       }
-
       lastScrollTop = currentScrollTop;
     };
 
@@ -42,13 +42,14 @@ const Header = () => {
     const menu = document.getElementById('menuPrincipal');
     const isOpen = menu?.classList.contains('show');
     if (isOpen) {
-      const toggler = document.querySelector('.navbar-toggler') as HTMLElement;
-      toggler?.click(); // Cierra el menú
+      if (navbarTogglerRef.current) {
+        navbarTogglerRef.current.click(); // Cierra el menú
+      }
     }
   };
 
   const linkClass = (path: string) =>
-    `nav-link ${activePath === path ? 'text-warning fw-bold' : ''}`;
+    `nav-link ${activePath === path ? 'text-warning fw-bold active-red-bg' : ''}`; // ¡Usamos la clase aquí!
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
@@ -57,6 +58,7 @@ const Header = () => {
           🛒 ColBogBike
         </Link>
         <button
+          ref={navbarTogglerRef} // Asignamos la referencia al botón
           className="navbar-toggler"
           type="button"
           data-bs-toggle="collapse"
