@@ -1,106 +1,72 @@
-import React, { useContext, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { CarritoContext } from '../context/CarritoContext';
-import { AuthContext } from '../context/AuthContext';
+import React, { useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 const Header = () => {
-  const { carrito } = useContext(CarritoContext);
-  const { usuario, logout } = useContext(AuthContext);
-  const navigate = useNavigate();
+  const location = useLocation();
 
-  // Cerrar menú al hacer clic en un enlace
   useEffect(() => {
+    // Cerrar menú al hacer clic en un enlace
     const links = document.querySelectorAll('.nav-link');
-    const collapseMenu = () => {
-      const menu = document.getElementById('menuPrincipal');
-      const isOpen = menu?.classList.contains('show');
-      if (isOpen) {
-        const toggler = document.querySelector('.navbar-toggler') as HTMLElement;
-        toggler?.click();
-      }
-    };
-    links.forEach(link => link.addEventListener('click', collapseMenu));
-    return () => {
-      links.forEach(link => link.removeEventListener('click', collapseMenu));
-    };
-  }, []);
-
-  // Cerrar menú si se hace scroll hacia abajo
-  useEffect(() => {
-    let lastScrollTop = window.scrollY;
-
-    const handleScroll = () => {
-      const currentScrollTop = window.scrollY;
-      const goingDown = currentScrollTop > lastScrollTop;
-
-      if (goingDown) {
+    links.forEach((link) =>
+      link.addEventListener('click', () => {
+        const navbarToggler = document.querySelector('.navbar-toggler') as HTMLElement;
         const menu = document.getElementById('menuPrincipal');
-        const isOpen = menu?.classList.contains('show');
-        if (isOpen) {
-          const toggler = document.querySelector('.navbar-toggler') as HTMLElement;
-          toggler?.click(); // Cierra el menú
+        if (menu?.classList.contains('show')) {
+          navbarToggler?.click();
         }
+      })
+    );
+
+    // Cerrar menú al hacer scroll hacia abajo
+    let lastScrollTop = window.scrollY;
+    const handleScroll = () => {
+      const currentScroll = window.scrollY;
+      const goingDown = currentScroll > lastScrollTop;
+
+      const menu = document.getElementById('menuPrincipal');
+      if (goingDown && menu?.classList.contains('show')) {
+        const navbarToggler = document.querySelector('.navbar-toggler') as HTMLElement;
+        navbarToggler?.click();
       }
 
-      lastScrollTop = currentScrollTop;
+      lastScrollTop = currentScroll;
     };
 
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, []);
 
+  // Estilo activo para el enlace seleccionado
+  const isActive = (path: string) =>
+    location.pathname === path ? 'text-warning' : 'text-light';
+
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-light fixed-top shadow-sm">
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
       <div className="container">
-        <Link className="navbar-brand" to="/">Col_Bog_Bike</Link>
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#menuPrincipal"
-          aria-controls="menuPrincipal"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
+        <Link className="navbar-brand" to="/">ColBogBike</Link>
+        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal">
           <span className="navbar-toggler-icon"></span>
         </button>
 
         <div className="collapse navbar-collapse" id="menuPrincipal">
           <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
             <li className="nav-item">
-              <Link className="nav-link" to="/productos">Productos</Link>
+              <Link className={`nav-link ${isActive('/')}`} to="/">Inicio</Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/sobre-nosotros">Sobre Nosotros</Link>
+              <Link className={`nav-link ${isActive('/productos')}`} to="/productos">Productos</Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/carrito">
-                Carrito ({carrito.length})
-              </Link>
+              <Link className={`nav-link ${isActive('/sobrenosotros')}`} to="/sobrenosotros">Sobre Nosotros</Link>
             </li>
-            {usuario ? (
-              <>
-                {usuario.rol === 'admin' && (
-                  <li className="nav-item">
-                    <Link className="nav-link" to="/admin">Panel Admin</Link>
-                  </li>
-                )}
-                <li className="nav-item">
-                  <button className="btn btn-link nav-link" onClick={logout}>Cerrar sesión</button>
-                </li>
-              </>
-            ) : (
-              <>
-                <li className="nav-item">
-                  <Link className="nav-link" to="/login">Iniciar sesión</Link>
-                </li>
-                <li className="nav-item">
-                  <Link className="nav-link" to="/registro">Registrarse</Link>
-                </li>
-              </>
-            )}
+            <li className="nav-item">
+              <Link className={`nav-link ${isActive('/contacto')}`} to="/contacto">Contacto</Link>
+            </li>
           </ul>
         </div>
       </div>
