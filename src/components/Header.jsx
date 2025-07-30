@@ -61,7 +61,7 @@ const Header = () => {
   );
 };
 
-const NavItem = ({ to, label, currentPath }: { to: string; label: string; currentPath: string }) => {
+const NavItem = ({ to, label, currentPath }) => {
   const isActive = currentPath === to;
 
   return (
@@ -70,7 +70,6 @@ const NavItem = ({ to, label, currentPath }: { to: string; label: string; curren
         to={to}
         className={`nav-link ${isActive ? 'bg-danger text-white' : ''}`}
         onClick={() => {
-          // Cierra el menú al seleccionar un item
           const menu = document.getElementById('menuPrincipal');
           const isOpen = menu?.classList.contains('show');
           if (isOpen) {
