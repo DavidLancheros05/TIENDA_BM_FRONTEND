@@ -18,7 +18,7 @@ const Header = () => {
         const menu = document.getElementById('menuPrincipal');
         const isOpen = menu?.classList.contains('show');
         if (isOpen) {
-          const toggler = document.querySelector('.navbar-toggler') as HTMLElement;
+          const toggler = document.querySelector('.navbar-toggler');
           toggler?.click(); // Cierra el menú
         }
       }
@@ -74,7 +74,7 @@ const NavItem = ({ to, label, currentPath }: { to: string; label: string; curren
           const menu = document.getElementById('menuPrincipal');
           const isOpen = menu?.classList.contains('show');
           if (isOpen) {
-            const toggler = document.querySelector('.navbar-toggler') as HTMLElement;
+            const toggler = document.querySelector('.navbar-toggler');
             toggler?.click();
           }
         }}
