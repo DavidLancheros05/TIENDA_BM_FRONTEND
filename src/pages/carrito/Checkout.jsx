@@ -5,6 +5,7 @@ import * as Yup from 'yup';
 import { CarritoContext } from '../../context/CarritoContext';
 import { AuthContext } from '../../context/AuthContext.jsx';
 import axios from 'axios';
+const API_URL = import.meta.env.VITE_API_URL;
 
 const BASE_FRONTEND_URL = window.location.origin;
 
@@ -75,7 +76,7 @@ const Checkout = () => {
 
     try {
       // const API_URL = import.meta.env.VITE_API_URL; // Asegúrate de que esto no esté duplicado o mal configurado
-      const response = await axios.post('/api/pagos/crear-link-pago', ventaYLink);
+      const response = await axios.post(`${API_URL}/pagos/crear-link-pago`, ventaYLink);
       const link = response.data?.link_pago;
 
       if (link) {

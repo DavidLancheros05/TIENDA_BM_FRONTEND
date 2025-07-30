@@ -18,7 +18,7 @@ const ProductoDetalle = () => {
   const [estrellas, setEstrellas] = useState(5);
   const [comentario, setComentario] = useState('');
   const token = localStorage.getItem('token');
-  const apiUrl = import.meta.env.VITE_API_URL;
+  const apiUrl = import.meta.env.VITE_API_URL; // Usar VITE_API_URL para consistencia
 
   useEffect(() => {
     axios.get(`${apiUrl}/productos/${id}`)
@@ -26,6 +26,8 @@ const ProductoDetalle = () => {
         setProducto(res.data);
         if (res.data.colores?.length > 0) setColorSeleccionado(res.data.colores[0]);
         if (res.data.tallas?.length > 0) setTallaSeleccionada(res.data.tallas[0]);
+        // Inicializar la cantidad a 1, pero no más que el stock disponible
+        setCantidad(res.data.stock > 0 ? 1 : 0); // Si el stock es 0, la cantidad inicial es 0
         return axios.get(`${apiUrl}/resenas/${res.data._id}`);
       })
       .then(resResenas => setResenas(resResenas.data))
@@ -33,15 +35,20 @@ const ProductoDetalle = () => {
         console.error('❌ Error cargando producto:', err);
         setProducto(null);
       });
-  }, [id, apiUrl]); // ✅ incluimos apiUrl
+  }, [id, apiUrl]);
 
-const handleAgregar = () => {
-  console.log("....");
-  console.log("....");
-  console.log("....");
-  console.log('🛒 Añadiendo al carrito:', { producto, cantidad, colorSeleccionado, tallaSeleccionada });
-  agregarAlCarrito(producto, cantidad, colorSeleccionado, tallaSeleccionada);
-};
+  // --- LOGS DE DEPURACIÓN PARA CANTIDAD Y STOCK ---
+  // Este log se ejecutará en cada render del componente
+  console.log(`Debug (ProductoDetalle): Cantidad actual = ${cantidad}, Stock del producto = ${producto?.stock}`);
+  // --- FIN LOGS DE DEPURACIÓN ---
+
+  const handleAgregar = () => {
+    console.log("....");
+    console.log("....");
+    console.log("....");
+    console.log('🛒 Añadiendo al carrito:', { producto, cantidad, colorSeleccionado, tallaSeleccionada });
+    agregarAlCarrito(producto, cantidad, colorSeleccionado, tallaSeleccionada);
+  };
 
   const handleComprarAhora = () => {
     handleAgregar();
@@ -59,20 +66,30 @@ const handleAgregar = () => {
   };
 
   const enviarResena = async () => {
-    if (!token) return navigate('/login');
+    if (!token) {
+      alert('Debes iniciar sesión para enviar una reseña.'); // Usar un modal en producción
+      return navigate('/login');
+    }
 
-    await axios.post(
-      `${apiUrl}/productos/${producto._id}/resena`,
-      { estrellas, comentario },
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
+    try {
+      await axios.post(
+        `${apiUrl}/productos/${producto._id}/resena`,
+        { estrellas, comentario },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
 
-    setComentario('');
-    setEstrellas(5);
+      setComentario('');
+      setEstrellas(5);
 
-    const res = await axios.get(`${apiUrl}/productos/${producto._id}`);
-    setProducto(res.data);
-    setResenas((await axios.get(`${apiUrl}/resenas/${producto._id}`)).data);
+      // Volver a cargar el producto y las reseñas para actualizar la UI
+      const res = await axios.get(`${apiUrl}/productos/${producto._id}`);
+      setProducto(res.data);
+      setResenas((await axios.get(`${apiUrl}/resenas/${producto._id}`)).data);
+      alert('Reseña enviada con éxito!'); // Usar un modal en producción
+    } catch (error) {
+      console.error('❌ Error enviando reseña:', error);
+      alert('Error al enviar la reseña. Inténtalo de nuevo.'); // Usar un modal en producción
+    }
   };
 
   if (!producto) {
@@ -83,10 +100,15 @@ const handleAgregar = () => {
     );
   }
 
+  // Función para obtener la URL completa de la imagen
   const getImagenUrl = (url) => {
-    return url.startsWith('http')
-      ? url
-      : `${apiUrl.replace(/\/$/, '')}/${url.replace(/^\/+/, '')}`;
+    // Si la URL ya es absoluta (http/https), la devuelve tal cual
+    if (url.startsWith('http')) {
+      return url;
+    }
+    // Si es una ruta relativa, la construye usando la apiUrl y el prefijo 'uploads'
+    // Aseguramos que no haya dobles barras al unir las rutas
+    return `${apiUrl.replace(/\/$/, '')}/uploads/${url.replace(/^\/+/, '')}`;
   };
 
   return (
@@ -147,17 +169,45 @@ const handleAgregar = () => {
                 <p><strong>Precio total:</strong> ${producto.precio.toLocaleString('es-CO')}</p>
                 <label><strong>Cantidad:</strong></label>
                 <div className="d-flex align-items-center mb-3" style={{ gap: '0.5rem' }}>
-                  <button className="btn btn-outline-secondary" onClick={() => cantidad > 1 && setCantidad(cantidad - 1)}>-</button>
+                  <button
+                    className="btn btn-outline-secondary"
+                    onClick={() => {
+                      console.log(`Debug: Clicked Minus. Cantidad antes: ${cantidad}`);
+                      if (cantidad > 1) {
+                        setCantidad(cantidad - 1);
+                        console.log(`Debug: Cantidad después (Minus): ${cantidad - 1}`);
+                      } else {
+                        console.log('Debug: Cantidad ya es 1, no se puede disminuir más.');
+                      }
+                    }}
+                  >-</button>
                   <input type="number" className="form-control text-center" value={cantidad} readOnly style={{ width: '60px' }} />
-                  <button className="btn btn-outline-secondary" onClick={() => cantidad < producto.stock && setCantidad(cantidad + 1)}>+</button>
+                  <button
+                    className="btn btn-outline-secondary"
+                    onClick={() => {
+                      console.log(`Debug: Clicked Plus. Cantidad antes: ${cantidad}, Stock: ${producto.stock}`);
+                      if (cantidad < producto.stock) {
+                        setCantidad(cantidad + 1);
+                        console.log(`Debug: Cantidad después (Plus): ${cantidad + 1}`);
+                      } else {
+                        console.log('Debug: Cantidad alcanzó el stock máximo o stock es 0.');
+                      }
+                    }}
+                  >+</button>
                 </div>
 
                 <div className="d-grid gap-2">
-                  
+                  <button
+                    className="btn btn-primary fw-bold"
+                    disabled={producto.stock === 0 || cantidad === 0} // Deshabilitar si stock es 0 o cantidad es 0
+                    onClick={handleAgregar}
+                  >
+                    🛒 Añadir al carrito
+                  </button>
 
                   <button
                     className="btn btn-success fw-bold"
-                    disabled={producto.stock === 0}
+                    disabled={producto.stock === 0 || cantidad === 0} // Deshabilitar si stock es 0 o cantidad es 0
                     onClick={handleComprarAhora}
                   >
                     ⚡ Comprar ahora
