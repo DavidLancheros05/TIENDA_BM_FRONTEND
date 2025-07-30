@@ -1,8 +1,13 @@
+import React from 'react';
 
-const numero = import.meta.env.REACT_APP_NUMERO_WHATSAPP;
-const enlace = `https://wa.me/${numero}`;
-console.log("Número de WhatsApp:", numero);
 const BotonWhatsApp = () => {
+  // --- ¡CORRECCIÓN AQUÍ! Cambiado de REACT_APP_ a VITE_ ---
+  const numero = import.meta.env.VITE_NUMERO_WHATSAPP;
+  // --- FIN DE LA CORRECCIÓN ---
+
+  const enlace = `https://wa.me/${numero}`;
+  console.log("Número de WhatsApp:", numero); // Verifica que el número se muestre correctamente en la consola
+
   return (
     <a
       href={enlace}

@@ -18,6 +18,9 @@ import AdminVentas from './pages/admin/AdminVentas';
 import Register from './pages/auth/Register';
 import SobreNosotros from './pages/SobreNosotros';
 import MisCompras from "./components/MisCompras";
+import BotonWhatsApp from './components/BotonWhatsApp'; // ✅ Asegúrate de importar correctamente
+import BurbujaCarrito from './components/BurbujaCarrito';
+
 const App = () => {
   return (
     <BrowserRouter>
@@ -43,6 +46,9 @@ const App = () => {
          <Route path="/MisCompras" element={<MisCompras />} />
       </Routes>
       <Footer />
+      <BotonWhatsApp /> {/* ✅ Aquí se renderiza en todas las páginas */}
+      <BurbujaCarrito /> {/* ✅ Aquí se renderiza en todas las páginas */}
+      
     </BrowserRouter>
   );
 };

@@ -210,7 +210,7 @@ const ProductoDetalle = () => {
 
                             {/* Columna 3 */}
                             <div className="col-md-4 mb-4">
-                                <p><strong>Precio total:</strong> ${producto.precio.toLocaleString('es-CO')}</p>
+                                <p><strong>Precio total:</strong> ${(producto.precio * cantidad).toLocaleString('es-CO')}</p>
                                 <label><strong>Cantidad:</strong></label>
                                 <div className="d-flex align-items-center mb-3" style={{ gap: '0.5rem' }}>
                                     <button

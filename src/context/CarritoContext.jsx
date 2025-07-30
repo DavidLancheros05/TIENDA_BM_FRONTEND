@@ -38,11 +38,15 @@ export const CarritoProvider = ({ children }) => {
     }, []);
 
     // Recalcular total cuando cambia carrito
-    useEffect(() => {
-        const nuevoTotal = carrito.reduce((acc, item) => acc + (item.precio * item.cantidad), 0);
-        setTotal(nuevoTotal);
-        //console.log('💲 Total actualizado:', nuevoTotal);
-    }, [carrito]);
+useEffect(() => {
+    const nuevoTotal = carrito.reduce((acc, item) => {
+        const precio = Number(item?.precio || item?.producto?.precio || 0);
+        const cantidad = Number(item?.cantidad || 0);
+        return acc + (precio * cantidad);
+    }, 0);
+
+    setTotal(nuevoTotal);
+}, [carrito]);
 
     // Sincronizar carrito con backend cuando cambia carrito
     useEffect(() => {
@@ -104,22 +108,44 @@ export const CarritoProvider = ({ children }) => {
     };
 
     // Quitar producto del carrito
-    const eliminarDelCarrito = (productoId, color, talla) => {
-        const nuevoCarrito = carrito.filter(item => {
-            return !(item.producto._id === productoId && item.color === color && item.talla === talla);
-        });
-        setCarrito(nuevoCarrito);
-    };
+const eliminarDelCarrito = (productoId, color, talla) => {
+    const nuevoCarrito = carrito.filter(item => {
+        return !(item.producto._id === productoId && item.color === color && item.talla === talla);
+    });
+    setCarrito(nuevoCarrito);
+    sincronizarConBackend(nuevoCarrito); // ✅ sincronizar
+};
 
     // Vaciar carrito completo
-    const vaciarCarrito = () => {
-        setCarrito([]);
-    };
+const vaciarCarrito = () => {
+    setCarrito([]);
+    sincronizarConBackend([]); // ✅ sincronizar
+};
 
     useEffect(() => {
         //console.log('🧾 Carrito final actualizado:', carrito);
     }, [carrito]);
+const sincronizarConBackend = async (carritoActualizado) => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
 
+    try {
+        const productosSinCircular = carritoActualizado.map(p => ({
+            producto: p.producto._id,
+            cantidad: p.cantidad,
+            precio: p.precio,
+            color: p.color,
+            talla: p.talla,
+        }));
+
+        await axios.post(`${apiUrl}/carrito/guardar`, { productos: productosSinCircular }, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+
+    } catch (error) {
+        console.error('❌ Error al sincronizar carrito después de eliminar o vaciar:', error);
+    }
+};
     return (
         <CarritoContext.Provider value={{
             carrito,
