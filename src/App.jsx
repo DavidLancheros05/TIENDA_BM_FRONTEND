@@ -9,7 +9,6 @@ import ListadoProductos from './components/ListadoProductos';
 import Carrito from './pages/carrito/Carrito';
 import BicicletasElectrica from './pages/productos/BicicletasElectrica';
 import Checkout from './pages/carrito/Checkout';
-import PagoPSE from './pages/cliente/pagos/PagoPSE';
 import PagoExitoso from './components/PagoExitoso';
 import PagoCancelado from './pages/cliente/pagos/PagoCancelado';
 import EditarImagenesProducto from "./components/EditarImagenesProducto";
@@ -32,7 +31,7 @@ const App = () => {
         <Route path="/accesorios" element={<ListadoProductos tipo="accesorios" />} />
         <Route path="/carrito" element={<Carrito />} />
         <Route path="/checkout" element={<Checkout />} />
-        <Route path="/pse" element={<PagoPSE />} />
+
         <Route path="/pago-exitoso/*" element={<PagoExitoso />} />
         <Route path="/pago-cancelado/*" element={<PagoCancelado />} />
         <Route path="/admin/productos/:id/imagenes" element={<EditarImagenesProducto />} />
