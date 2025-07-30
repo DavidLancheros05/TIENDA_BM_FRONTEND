@@ -7,6 +7,10 @@ export const CarritoProvider = ({ children }) => {
     const [carrito, setCarrito] = useState([]);
     const [total, setTotal] = useState(0);
 
+    // --- ¡AÑADIDA ESTA LÍNEA! ---
+    const apiUrl = import.meta.env.VITE_API_URL; // Asegura que apiUrl esté definida
+    // --- FIN DE LA LÍNEA AÑADIDA ---
+
     // Cargar carrito desde backend al iniciar
     useEffect(() => {
         const token = localStorage.getItem('token');
