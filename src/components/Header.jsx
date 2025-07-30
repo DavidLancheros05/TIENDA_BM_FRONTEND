@@ -4,14 +4,16 @@ import { CarritoContext } from '../context/CarritoContext';
 import { AuthContext } from '../context/AuthContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+
 const Header = () => {
   const { carrito } = useContext(CarritoContext);
   const { usuario, logout } = useContext(AuthContext);
   const navigate = useNavigate();
 
-const totalItems = Array.isArray(carrito)
-  ? carrito.reduce((acc, item) => acc + item.cantidad, 0)
-  : 0;
+  const totalItems = Array.isArray(carrito)
+    ? carrito.reduce((acc, item) => acc + item.cantidad, 0)
+    : 0;
+
   const handleLogout = () => {
     logout();
     navigate('/');
@@ -26,7 +28,7 @@ const totalItems = Array.isArray(carrito)
             alt="ColBogBike Logo"
             style={{ width: '40px', marginRight: '10px' }}
           />
-          <strong style={{ color: '#ffc107' }}>ColBogBike</strong>
+          <strong className="text-warning">ColBogBike</strong>
         </Link>
 
         <button
@@ -42,10 +44,10 @@ const totalItems = Array.isArray(carrito)
         </button>
 
         <div className="collapse navbar-collapse" id="menuPrincipal">
-          <ul className="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center gap-2">
+          <ul className="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center w-100 gap-2">
 
-            {/* Inicio, productos y sobre nosotros */}
-            <div className="d-flex align-items-center gap-2">
+            {/* Navegación principal */}
+            <div className="d-lg-flex flex-lg-row gap-2 w-100 justify-content-lg-start">
               <li className="nav-item">
                 <Link className="nav-link text-warning" to="/">Inicio</Link>
               </li>
@@ -90,7 +92,7 @@ const totalItems = Array.isArray(carrito)
               </>
             )}
 
-            {/* Mis compras (solo si está logueado) */}
+            {/* Mis compras */}
             {usuario && (
               <li className="nav-item">
                 <Link className="nav-link text-warning" to="/miscompras">Mis Compras</Link>
@@ -101,28 +103,21 @@ const totalItems = Array.isArray(carrito)
 
             {/* Sesión */}
             {!usuario ? (
-              <div className="d-flex align-items-center gap-2">
-                <Link className="btn btn-outline-warning" to="/login">
+              <div className="d-flex flex-column flex-lg-row align-items-start align-items-lg-center gap-2">
+                <Link className="btn btn-outline-warning w-100 w-lg-auto" to="/login">
                   Iniciar sesión
                 </Link>
-                <Link className="btn btn-warning" to="/register">
+                <Link className="btn btn-warning w-100 w-lg-auto" to="/register">
                   Registrarse
                 </Link>
               </div>
             ) : (
-              <>
-                <li className="nav-item text-white ms-2">
-                  👋 Hola, {usuario.nombre}
-                </li>
-                <li className="nav-item ms-2">
-                  <button
-                    onClick={handleLogout}
-                    className="btn btn-danger"
-                  >
-                    Cerrar sesión
-                  </button>
-                </li>
-              </>
+              <div className="d-flex flex-column flex-lg-row align-items-start align-items-lg-center gap-2 ms-2">
+                <span className="nav-item text-white">👋 Hola, {usuario.nombre}</span>
+                <button onClick={handleLogout} className="btn btn-danger w-100 w-lg-auto">
+                  Cerrar sesión
+                </button>
+              </div>
             )}
           </ul>
         </div>
