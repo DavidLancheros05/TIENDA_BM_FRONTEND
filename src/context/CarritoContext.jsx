@@ -100,7 +100,7 @@ api.get('/carrito')
   };
 
   // Quitar producto del carrito
-  const quitarDelCarrito = (productoId, color, talla) => {
+  const eliminarDelCarrito = (productoId, color, talla) => {
     const nuevoCarrito = carrito.filter(item => {
       return !(item.producto._id === productoId && item.color === color && item.talla === talla);
     });
@@ -120,7 +120,7 @@ api.get('/carrito')
       carrito,
       total,
       agregarAlCarrito,
-      quitarDelCarrito,
+      eliminarDelCarrito,
       vaciarCarrito,
       setCarrito,
     }}>

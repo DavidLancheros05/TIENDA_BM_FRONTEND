@@ -3,28 +3,38 @@ import { CarritoContext } from '../../context/CarritoContext';
 import { useNavigate } from 'react-router-dom';
 
 const Carrito = () => {
-  const { carrito, eliminarDelCarrito, limpiarCarrito, setCarrito } = useContext(CarritoContext);
+  // Destructura las funciones con los nombres correctos del contexto:
+  // 'eliminarDelCarrito' y 'vaciarCarrito'
+  const { carrito, total, eliminarDelCarrito, vaciarCarrito, setCarrito } = useContext(CarritoContext);
   const navigate = useNavigate();
 
-  const total = carrito.reduce(
-    (acc, item) => acc + ((item.producto?.precio || 0) * item.cantidad),
-    0
-  );
+  // El total ya se calcula y se proporciona desde el CarritoContext,
+  // así que esta línea es redundante si ya lo tienes en el contexto.
+  // const total = carrito.reduce(
+  //   (acc, item) => acc + ((item.producto?.precio || 0) * item.cantidad),
+  //   0
+  // );
 
   const irAPagar = () => {
     if (carrito.length === 0) {
-      alert("Tu carrito está vacío.");
+      // Es mejor usar un modal o un mensaje en la UI en lugar de alert()
+      console.warn("Tu carrito está vacío.");
+      alert("Tu carrito está vacío."); // Manteniendo alert() por ahora, pero considera cambiarlo
       return;
     }
     navigate('/checkout');
   };
 
+  // Función cambiarCantidad sin anotaciones de tipo de TypeScript
   const cambiarCantidad = (index, delta) => {
     setCarrito(prev => {
       const nuevo = [...prev];
-      const nuevaCantidad = nuevo[index].cantidad + delta;
-      if (nuevaCantidad < 1) return prev;
-      nuevo[index].cantidad = nuevaCantidad;
+      // Asegúrate de que 'cantidad' exista en el objeto del carrito
+      if (nuevo[index]) {
+        const nuevaCantidad = nuevo[index].cantidad + delta;
+        if (nuevaCantidad < 1) return prev; // No permitir cantidad menor a 1
+        nuevo[index].cantidad = nuevaCantidad;
+      }
       return nuevo;
     });
   };
@@ -41,36 +51,36 @@ const Carrito = () => {
             <div className="d-flex flex-column gap-4">
               {carrito.map((item, idx) => (
                 <div
-                  key={idx}
+                  key={`${item.producto._id}-${item.color || ''}-${item.talla || ''}-${idx}`} // Clave más robusta
                   className="d-flex flex-row align-items-start gap-3 border-bottom pb-3"
                   style={{ flexWrap: 'nowrap' }}
                 >
                   {/* Imagen */}
-<img
-  src={
-    item.producto?.imagenes?.[0]?.url
-      ? item.producto.imagenes[0].url.startsWith('http')
-        ? item.producto.imagenes[0].url
-        : `${import.meta.env.VITE_BACKEND_URL}/${item.producto.imagenes[0].url}`
-      : 'https://via.placeholder.com/100'
-  }
-  alt={item.producto?.nombre}
-  style={{
-    width: '100px',
-    height: '100px',
-    objectFit: 'cover',
-    borderRadius: '8px',
-    flexShrink: 0,
-  }}
-/>
-
+                  <img
+                    src={
+                      item.producto?.imagenes?.[0]?.url
+                        ? item.producto.imagenes[0].url.startsWith('http')
+                          ? item.producto.imagenes[0].url
+                          : `${import.meta.env.VITE_API_URL}/uploads/${item.producto.imagenes[0].url}` // Usar VITE_API_URL
+                        : 'https://via.placeholder.com/100' // Imagen de fallback
+                    }
+                    alt={item.producto?.nombre || 'Producto'}
+                    style={{
+                      width: '100px',
+                      height: '100px',
+                      objectFit: 'cover',
+                      borderRadius: '8px',
+                      flexShrink: 0,
+                    }}
+                  />
 
                   {/* Detalles del producto */}
                   <div className="d-flex flex-column flex-grow-1">
                     <div className="d-flex justify-content-between align-items-start flex-wrap">
-                      <h5>{item.producto?.nombre}</h5>
+                      <h5>{item.producto?.nombre || 'Producto desconocido'}</h5>
                       <button
-                        onClick={() => eliminarDelCarrito(item.producto?._id)}
+                        // Llama a 'eliminarDelCarrito' pasando los TRES argumentos:
+                        onClick={() => eliminarDelCarrito(item.producto?._id || '', item.color, item.talla)}
                         className="btn btn-outline-danger btn-sm"
                       >
                         🗑️ Eliminar
@@ -78,8 +88,8 @@ const Carrito = () => {
                     </div>
 
                     <p className="mb-1">
-                      <strong>Color:</strong> {item.color} &nbsp;&nbsp;
-                      <strong>Talla:</strong> {item.talla}
+                      <strong>Color:</strong> {item.color || 'N/A'} &nbsp;&nbsp;
+                      <strong>Talla:</strong> {item.talla || 'N/A'}
                     </p>
 
                     <div className="d-flex align-items-center mb-2">
@@ -100,11 +110,11 @@ const Carrito = () => {
 
                     <div>
                       <p className="mb-1">
-                        <strong>Precio:</strong> ${item.producto?.precio?.toLocaleString('es-CO')} c/u
+                        <strong>Precio:</strong> ${item.producto?.precio?.toLocaleString('es-CO') || '0'} c/u
                       </p>
                       <p className="mb-0">
                         <strong>Total:</strong>{' '}
-                        ${(item.producto?.precio * item.cantidad).toLocaleString('es-CO')}
+                        {(item.producto?.precio && item.cantidad) ? (item.producto.precio * item.cantidad).toLocaleString('es-CO') : 'N/A'}
                       </p>
                     </div>
                   </div>
@@ -116,7 +126,7 @@ const Carrito = () => {
               <h4 className="mb-3 mb-md-0 text-primary">
                 💰 Total: <span className="fw-bold text-success">${total.toLocaleString('es-CO')}</span>
               </h4>
-              <button onClick={limpiarCarrito} className="btn btn-outline-danger">
+              <button onClick={vaciarCarrito} className="btn btn-outline-danger">
                 Vaciar Carrito
               </button>
             </div>
