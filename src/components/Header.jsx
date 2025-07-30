@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { CarritoContext } from '../context/CarritoContext';
 import { AuthContext } from '../context/AuthContext';
@@ -17,12 +17,36 @@ const Header = () => {
   const handleLogout = () => {
     logout();
     navigate('/');
+    closeMenu(); // Cerrar menú también al cerrar sesión
   };
+
+  // 👇 Función para cerrar el menú hamburguesa
+  const closeMenu = () => {
+    const menu = document.getElementById('menuPrincipal');
+    const bsCollapse = new window.bootstrap.Collapse(menu, {
+      toggle: false,
+    });
+    bsCollapse.hide();
+  };
+
+  // 👇 Cierra el menú al hacer scroll hacia abajo
+  useEffect(() => {
+    let lastScrollTop = 0;
+    const handleScroll = () => {
+      const st = window.pageYOffset || document.documentElement.scrollTop;
+      if (st > lastScrollTop) {
+        closeMenu();
+      }
+      lastScrollTop = st <= 0 ? 0 : st;
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow">
       <div className="container-fluid">
-        <Link className="navbar-brand d-flex align-items-center" to="/">
+        <Link className="navbar-brand d-flex align-items-center" to="/" onClick={closeMenu}>
           <img
             src="/img/logo-colbogbike.jpg"
             alt="ColBogBike Logo"
@@ -45,23 +69,22 @@ const Header = () => {
 
         <div className="collapse navbar-collapse" id="menuPrincipal">
           <ul className="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center w-100 gap-2">
-
-            {/* Navegación principal */}
+            {/* Enlaces principales */}
             <div className="d-lg-flex flex-lg-row gap-2 w-100 justify-content-lg-start">
               <li className="nav-item">
-                <Link className="nav-link text-warning" to="/">Inicio</Link>
+                <Link className="nav-link text-warning" to="/" onClick={closeMenu}>Inicio</Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link text-warning" to="/bicicletas">Bicicletas</Link>
+                <Link className="nav-link text-warning" to="/bicicletas" onClick={closeMenu}>Bicicletas</Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link text-warning" to="/bicicletaselectrica">Eléctricas</Link>
+                <Link className="nav-link text-warning" to="/bicicletaselectrica" onClick={closeMenu}>Eléctricas</Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link text-warning" to="/accesorios">Accesorios</Link>
+                <Link className="nav-link text-warning" to="/accesorios" onClick={closeMenu}>Accesorios</Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link text-warning" to="/sobrenosotros">Sobre Nosotros</Link>
+                <Link className="nav-link text-warning" to="/sobrenosotros" onClick={closeMenu}>Sobre Nosotros</Link>
               </li>
             </div>
 
@@ -69,25 +92,22 @@ const Header = () => {
 
             {/* Carrito */}
             <li className="nav-item position-relative">
-              <Link className="nav-link text-warning" to="/carrito" style={{ fontSize: '1.4rem' }}>
+              <Link className="nav-link text-warning" to="/carrito" onClick={closeMenu} style={{ fontSize: '1.4rem' }}>
                 🛒
                 {totalItems > 0 && (
-                  <span
-                    className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                    style={{ fontSize: '0.7rem' }}
-                  >
+                  <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style={{ fontSize: '0.7rem' }}>
                     {totalItems}
                   </span>
                 )}
               </Link>
             </li>
 
-            {/* Panel de admin */}
+            {/* Panel admin */}
             {usuario?.rol === 'admin' && (
               <>
                 <div className="vr mx-3 d-none d-lg-block" style={{ height: '30px' }}></div>
                 <li className="nav-item">
-                  <Link className="nav-link text-warning" to="/adminDashboard">Panel</Link>
+                  <Link className="nav-link text-warning" to="/adminDashboard" onClick={closeMenu}>Panel</Link>
                 </li>
               </>
             )}
@@ -95,7 +115,7 @@ const Header = () => {
             {/* Mis compras */}
             {usuario && (
               <li className="nav-item">
-                <Link className="nav-link text-warning" to="/miscompras">Mis Compras</Link>
+                <Link className="nav-link text-warning" to="/miscompras" onClick={closeMenu}>Mis Compras</Link>
               </li>
             )}
 
@@ -104,10 +124,10 @@ const Header = () => {
             {/* Sesión */}
             {!usuario ? (
               <div className="d-flex flex-column flex-lg-row align-items-start align-items-lg-center gap-2">
-                <Link className="btn btn-outline-warning w-100 w-lg-auto" to="/login">
+                <Link className="btn btn-outline-warning w-100 w-lg-auto" to="/login" onClick={closeMenu}>
                   Iniciar sesión
                 </Link>
-                <Link className="btn btn-warning w-100 w-lg-auto" to="/register">
+                <Link className="btn btn-warning w-100 w-lg-auto" to="/register" onClick={closeMenu}>
                   Registrarse
                 </Link>
               </div>
