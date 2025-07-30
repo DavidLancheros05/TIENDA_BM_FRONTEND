@@ -17,28 +17,28 @@ const Header = () => {
   const handleLogout = () => {
     logout();
     navigate('/');
-    closeMenu(); // Cerrar menú también al cerrar sesión
+    closeMenu();
   };
 
-  // 👇 Función para cerrar el menú hamburguesa
   const closeMenu = () => {
     const menu = document.getElementById('menuPrincipal');
-    const bsCollapse = new window.bootstrap.Collapse(menu, {
-      toggle: false,
-    });
-    bsCollapse.hide();
+    if (menu?.classList.contains('show')) {
+      const toggler = document.querySelector('.navbar-toggler') as HTMLElement;
+      toggler?.click(); // Simula clic para cerrarlo
+    }
   };
 
-  // 👇 Cierra el menú al hacer scroll hacia abajo
+  // Cierra el menú al hacer scroll
   useEffect(() => {
     let lastScrollTop = 0;
     const handleScroll = () => {
-      const st = window.pageYOffset || document.documentElement.scrollTop;
-      if (st > lastScrollTop) {
+      const current = window.scrollY;
+      if (current > lastScrollTop) {
         closeMenu();
       }
-      lastScrollTop = st <= 0 ? 0 : st;
+      lastScrollTop = current;
     };
+
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -69,7 +69,6 @@ const Header = () => {
 
         <div className="collapse navbar-collapse" id="menuPrincipal">
           <ul className="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center w-100 gap-2">
-            {/* Enlaces principales */}
             <div className="d-lg-flex flex-lg-row gap-2 w-100 justify-content-lg-start">
               <li className="nav-item">
                 <Link className="nav-link text-warning" to="/" onClick={closeMenu}>Inicio</Link>
@@ -90,7 +89,6 @@ const Header = () => {
 
             <div className="vr mx-3 d-none d-lg-block" style={{ height: '30px' }}></div>
 
-            {/* Carrito */}
             <li className="nav-item position-relative">
               <Link className="nav-link text-warning" to="/carrito" onClick={closeMenu} style={{ fontSize: '1.4rem' }}>
                 🛒
@@ -102,7 +100,6 @@ const Header = () => {
               </Link>
             </li>
 
-            {/* Panel admin */}
             {usuario?.rol === 'admin' && (
               <>
                 <div className="vr mx-3 d-none d-lg-block" style={{ height: '30px' }}></div>
@@ -112,7 +109,6 @@ const Header = () => {
               </>
             )}
 
-            {/* Mis compras */}
             {usuario && (
               <li className="nav-item">
                 <Link className="nav-link text-warning" to="/miscompras" onClick={closeMenu}>Mis Compras</Link>
@@ -121,7 +117,6 @@ const Header = () => {
 
             <div className="vr mx-3 d-none d-lg-block" style={{ height: '30px' }}></div>
 
-            {/* Sesión */}
             {!usuario ? (
               <div className="d-flex flex-column flex-lg-row align-items-start align-items-lg-center gap-2">
                 <Link className="btn btn-outline-warning w-100 w-lg-auto" to="/login" onClick={closeMenu}>
