@@ -20,7 +20,9 @@ import SobreNosotros from './pages/SobreNosotros';
 import MisCompras from "./components/MisCompras";
 import BotonWhatsApp from './components/BotonWhatsApp'; // ✅ Asegúrate de importar correctamente
 import BurbujaCarrito from './components/BurbujaCarrito';
-
+import ForgotPassword from './pages/auth/ForgotPassword'; // importa al inicio
+import ResetPassword from './pages/auth/ResetPassword';
+import AdminAsignarVariantes from './pages/admin/AdminAsignarVariantes';
 const App = () => {
   return (
     <BrowserRouter>
@@ -30,8 +32,8 @@ const App = () => {
         <Route path="/login" element={<LoginAdmin />} />
         <Route path="/producto/:id" element={<ProductoDetalle />} />
         <Route path="/bicicletaselectrica" element={<BicicletasElectrica />} />
-        <Route path="/bicicletas" element={<ListadoProductos tipo="bicicleta" />} />
-        <Route path="/accesorios" element={<ListadoProductos tipo="accesorios" />} />
+        <Route path="/bicicletas" element={<ListadoProductos />} />
+        <Route path="/accesorios" element={<ListadoProductos />} />
         <Route path="/carrito" element={<Carrito />} />
         <Route path="/checkout" element={<Checkout />} />
 
@@ -44,6 +46,9 @@ const App = () => {
         <Route path="/register" element={<Register />} />
         <Route path="/sobrenosotros" element={<SobreNosotros />} />
          <Route path="/MisCompras" element={<MisCompras />} />
+         <Route path="/forgot-password" element={<ForgotPassword />} />
+         <Route path="/restablecer-password/:token" element={<ResetPassword />} />
+         <Route path="/admin/productos/:id/variantes" element={<AdminAsignarVariantes />} />
       </Routes>
       <Footer />
       <BotonWhatsApp /> {/* ✅ Aquí se renderiza en todas las páginas */}

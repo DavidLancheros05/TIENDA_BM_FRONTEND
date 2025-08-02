@@ -16,7 +16,7 @@ export default function ImageUploader({ imagenes, setImagenes }) {
       for (const file of files) {
         const formData = new FormData();
         formData.append("file", file);
-        formData.append("upload_preset", "tienda_unsigned"); // tu preset unsigned
+        formData.append("upload_preset", "tienda_unsigned");
 
         const res = await axios.post(
           "https://api.cloudinary.com/v1_1/dmynykmea/image/upload",
@@ -38,20 +38,21 @@ export default function ImageUploader({ imagenes, setImagenes }) {
   };
 
   return (
-    <label className="relative inline-block w-6 h-6 border rounded bg-gray-200 cursor-pointer overflow-hidden">
-      <span className="absolute inset-0 flex items-center justify-center text-xs">➕</span>
-      <input
-        type="file"
-        multiple
-        accept="image/*"
-        onChange={handleUpload}
-        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-      />
-      {subiendo && (
-        <span className="absolute inset-0 flex items-center justify-center text-[8px] bg-white bg-opacity-80">
-          ⏳
-        </span>
-      )}
-    </label>
+<div className="position-relative d-inline-block" style={{ width: '62px', height: '62px' }}>
+  <label
+    className="btn btn-light btn-sm p-0 border rounded-circle w-100 h-100 d-flex align-items-center justify-content-center"
+    style={{ fontSize: '20px' }}
+  >
+    {subiendo ? "⏳" : "➕"}
+    <input
+      type="file"
+      multiple
+      accept="image/*"
+      onChange={handleUpload}
+      className="position-absolute top-0 start-0 w-100 h-100 opacity-0"
+      style={{ cursor: "pointer" }}
+    />
+  </label>
+</div>
   );
 }

@@ -71,72 +71,66 @@ const Header = () => {
         <div className="collapse navbar-collapse" id="menuPrincipal">
           <ul className="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center gap-2">
 
-            {/* Rutas principales */}
-            <div className="d-flex align-items-center gap-2">
-              <NavItem to="/" label="Inicio" currentPath={location.pathname} />
-              <NavItem to="/bicicletas" label="Bicicletas" currentPath={location.pathname} />
-              <NavItem to="/bicicletaselectrica" label="Eléctricas" currentPath={location.pathname} />
-              <NavItem to="/accesorios" label="Accesorios" currentPath={location.pathname} />
-              <NavItem to="/sobrenosotros" label="Sobre Nosotros" currentPath={location.pathname} />
-            </div>
+  {/* Rutas principales */}
+  <NavItem to="/" label="Inicio" currentPath={location.pathname} />
+  <NavItem to="/bicicletas" label="Bicicletas" currentPath={location.pathname} />
+  <NavItem to="/bicicletaselectrica" label="Eléctricas" currentPath={location.pathname} />
+  <NavItem to="/accesorios" label="Accesorios" currentPath={location.pathname} />
+  <NavItem to="/sobrenosotros" label="Sobre Nosotros" currentPath={location.pathname} />
 
-            <div className="vr mx-3 d-none d-lg-block" style={{ height: '30px' }}></div>
+  {/* Separador */}
+  <li><div className="vr mx-3 d-none d-lg-block" style={{ height: '30px' }}></div></li>
 
-            {/* Carrito */}
-            <li className="nav-item position-relative">
-              <Link className="nav-link text-warning" to="/carrito" style={{ fontSize: '1.4rem' }}>
-                🛒
-                {totalItems > 0 && (
-                  <span
-                    className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                    style={{ fontSize: '0.7rem' }}
-                  >
-                    {totalItems}
-                  </span>
-                )}
-              </Link>
-            </li>
+  {/* Carrito */}
+  <li className="nav-item position-relative">
+    <Link className="nav-link text-warning" to="/carrito" style={{ fontSize: '1.4rem' }}>
+      🛒
+      {totalItems > 0 && (
+        <span
+          className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+          style={{ fontSize: '0.7rem' }}
+        >
+          {totalItems}
+        </span>
+      )}
+    </Link>
+  </li>
 
-            {/* Admin */}
-            {usuario?.rol === 'admin' && (
-              <>
-                <div className="vr mx-3 d-none d-lg-block" style={{ height: '30px' }}></div>
-                <li className="nav-item">
-                  <NavItem to="/adminDashboard" label="Panel" currentPath={location.pathname} />
-                </li>
-              </>
-            )}
+  {/* Admin */}
+  {usuario?.rol === 'admin' && (
+    <>
+      <li><div className="vr mx-3 d-none d-lg-block" style={{ height: '30px' }}></div></li>
+      <NavItem to="/adminDashboard" label="Panel" currentPath={location.pathname} />
+    </>
+  )}
 
-            {/* Mis Compras */}
-            {usuario && (
-              <li className="nav-item">
-                <NavItem to="/miscompras" label="Mis Compras" currentPath={location.pathname} />
-              </li>
-            )}
+  {/* Mis Compras */}
+  {usuario && (
+    <NavItem to="/miscompras" label="Mis Compras" currentPath={location.pathname} />
+  )}
 
-            <div className="vr mx-3 d-none d-lg-block" style={{ height: '30px' }}></div>
+  {/* Separador */}
+  <li><div className="vr mx-3 d-none d-lg-block" style={{ height: '30px' }}></div></li>
 
-            {/* Sesión */}
-            {!usuario ? (
-              <div className="d-flex align-items-center gap-2">
-                <Link className="btn btn-outline-warning" to="/login">
-                  Iniciar sesión
-                </Link>
-                <Link className="btn btn-warning" to="/register">
-                  Registrarse
-                </Link>
-              </div>
-            ) : (
-              <>
-                <li className="nav-item text-white ms-2">👋 Hola, {usuario.nombre}</li>
-                <li className="nav-item ms-2">
-                  <button onClick={handleLogout} className="btn btn-danger">
-                    Cerrar sesión
-                  </button>
-                </li>
-              </>
-            )}
-          </ul>
+  {/* Sesión */}
+  {!usuario ? (
+    <>
+      <li>
+        <Link className="btn btn-outline-warning" to="/login">Iniciar sesión</Link>
+      </li>
+      <li>
+        <Link className="btn btn-warning" to="/register">Registrarse</Link>
+      </li>
+    </>
+  ) : (
+    <>
+      <li className="nav-item text-white ms-2">👋 Hola, {usuario.nombre}</li>
+      <li className="nav-item ms-2">
+        <button onClick={handleLogout} className="btn btn-danger">Cerrar sesión</button>
+      </li>
+    </>
+  )}
+</ul>
         </div>
       </div>
     </nav>

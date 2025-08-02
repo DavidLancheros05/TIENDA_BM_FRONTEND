@@ -76,9 +76,25 @@ const ListadoProductos = ({ tipo }) => {
                   )}
                   <div className="card-body">
                     <h5 className="card-title">{producto.nombre}</h5>
-                    <p className="fw-bold text-success">
-                      ${producto.precio.toFixed(2)}
-                    </p>
+                    <div>
+  {producto.precioOriginal && producto.descuento?.porcentaje ? (
+    <>
+      <span className="text-muted text-decoration-line-through me-2">
+        ${producto.precioOriginal.toFixed(2)}
+      </span>
+      <span className="badge bg-danger me-2">
+        -{producto.descuento.porcentaje}%
+      </span>
+      <span className="fw-bold text-success fs-5">
+        ${producto.precio.toFixed(2)}
+      </span>
+    </>
+  ) : (
+    <span className="fw-bold text-success fs-5">
+      ${producto.precio.toFixed(2)}
+    </span>
+  )}
+</div>
                   </div>
                 </Link>
 

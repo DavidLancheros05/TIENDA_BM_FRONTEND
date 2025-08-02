@@ -13,7 +13,9 @@
     "@fortawesome/fontawesome-free": "^7.0.0",
     "@hookform/resolvers": "^5.2.0",
     "axios": "^1.11.0",
+    "bcryptjs": "^3.0.2",
     "bootstrap": "^5.3.7",
+    "bootstrap-icons": "^1.13.1",
     "framer-motion": "^12.23.9",
     "lucide-react": "^0.526.0",
     "react": "^19.1.0",
@@ -21,6 +23,7 @@
     "react-hook-form": "^7.61.1",
     "react-router-dom": "^7.7.1",
     "react-slick": "^0.30.3",
+    "resend": "^4.7.0",
     "slick-carousel": "^1.8.1",
     "yup": "^1.6.1"
   },

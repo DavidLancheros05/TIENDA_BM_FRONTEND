@@ -160,7 +160,7 @@ const ProductoDetalle = () => {
 
             <div className="d-flex flex-wrap gap-3">
                 {/* Columna izquierda */}
-                <div className="flex-grow-1 p-3 shadow rounded" style={{ backgroundColor: '#e3f2fd', minWidth: '60%' }}>
+                <div className="flex-grow-1 p-3 shadow rounded" style={{ backgroundColor: '#ffffffff', minWidth: '60%' }}>
                     <GaleriaImagenes
                         imagenes={producto.imagenes?.length > 0 ? producto.imagenes : [producto.imagen]}
                         getImagenUrl={getImagenUrl}
