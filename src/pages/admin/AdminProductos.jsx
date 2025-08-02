@@ -80,34 +80,34 @@ export default function AdminProductos() {
     setNuevoProducto((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleAgregarNuevo = async () => {
-    const nuevo = {
-      nombre: nuevoProducto.nombre,
-      descripcion: nuevoProducto.descripcion,
-      precio: parseFloat(nuevoProducto.precio),
-      precioOriginal: parseFloat(nuevoProducto.precioOriginal),
-      descuento: { porcentaje: parseFloat(nuevoProducto.descuento) },
-      marca: nuevoProducto.marca,
-      tipoProducto: nuevoProducto.tipoProducto,
-      categoria: nuevoProducto.categoria,
-      colores: nuevoProducto.colores.split(",").map(c => c.trim()),
-      tallas: nuevoProducto.tallas.split(",").map(t => t.trim()),
-    };
-    await axios.post(`${API_URL}/productos`, nuevo);
-    setNuevoProducto({
-      nombre: "",
-      descripcion: "",
-      precio: "",
-      precioOriginal: "",
-      descuento: "",
-      marca: "",
-      tipoProducto: "",
-      categoria: "",
-      colores: "",
-      tallas: "",
-    });
-    fetchProductos();
+const handleAgregarNuevo = async () => {
+  const nuevo = {
+    nombre: nuevoProducto.nombre,
+    descripcion: nuevoProducto.descripcion,
+    precio: parseFloat(nuevoProducto.precio),
+    precioOriginal: parseFloat(nuevoProducto.precioOriginal),
+    descuento: { porcentaje: parseFloat(nuevoProducto.descuento) },
+    marca: nuevoProducto.marca,
+    tipoProducto: nuevoProducto.tipoProducto,
+    categoria: nuevoProducto.categoria,
+    colores: nuevoProducto.colores.split(",").map(c => c.trim()),
+    tallas: nuevoProducto.tallas.split(",").map(t => t.trim()),
   };
+  await api.post("/productos", nuevo); // ✅
+  setNuevoProducto({
+    nombre: "",
+    descripcion: "",
+    precio: "",
+    precioOriginal: "",
+    descuento: "",
+    marca: "",
+    tipoProducto: "",
+    categoria: "",
+    colores: "",
+    tallas: "",
+  });
+  fetchProductos();
+};
 
   return (
     <div className="p-4">
