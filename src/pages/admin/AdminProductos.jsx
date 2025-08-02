@@ -66,7 +66,7 @@ export default function AdminProductos() {
 
   const handleEliminar = async (id) => {
     if (!window.confirm("¿Eliminar este producto?")) return;
-    await api.post("/productos", nuevo); // ✅
+    await api.delete(`/productos/${id}`); // ✅
     fetchProductos();
   };
 
