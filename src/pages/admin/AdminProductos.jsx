@@ -110,118 +110,95 @@ const handleAgregarNuevo = async () => {
 };
 
   return (
-  <div className="p-6 max-w-7xl mx-auto">
-    <h2 className="text-2xl font-bold mb-6 text-gray-800">📦 Administrar Productos</h2>
+    <div className="p-4">
+      <h2 className="text-xl font-bold mb-4">Administrar Productos</h2>
 
-    {/* Sección para agregar nuevo producto */}
-    <div className="bg-white p-4 rounded-2xl shadow-md mb-6 border">
-      <h3 className="font-semibold text-lg mb-4 text-gray-700">➕ Agregar nuevo producto</h3>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {Object.entries(nuevoProducto).map(([key, value]) => (
-          <div key={key}>
-            <label className="block text-sm font-medium text-gray-600 capitalize">{key}</label>
-            <input
-              name={key}
-              value={value}
-              onChange={handleNuevoChange}
-              className="w-full mt-1 p-2 border rounded-xl focus:ring focus:ring-blue-200"
-              placeholder={`Ingrese ${key}`}
-            />
-          </div>
-        ))}
+      <div className="overflow-x-auto">
+        <table className="table-auto table-fixed w-full border text-xs">
+          <thead className="bg-gray-200">
+            <tr>
+              <th>Nombre</th>
+              <th>Descripción</th>
+              <th>Precio</th>
+              <th>Precio Original</th>
+              <th>Descuento</th>
+              <th>Marca</th>
+              <th>Tipo</th>
+              <th>Categoría</th>
+              <th>Colores</th>
+              <th>Tallas</th>
+              <th>Imágenes</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {/* Fila agregar nuevo */}
+            <tr className="bg-green-50 border-t">
+              <td><input name="nombre" value={nuevoProducto.nombre} onChange={handleNuevoChange} /></td>
+              <td><input name="descripcion" value={nuevoProducto.descripcion} onChange={handleNuevoChange} /></td>
+              <td><input name="precio" value={nuevoProducto.precio} onChange={handleNuevoChange} /></td>
+              <td><input name="precioOriginal" value={nuevoProducto.precioOriginal} onChange={handleNuevoChange} /></td>
+              <td><input name="descuento" value={nuevoProducto.descuento} onChange={handleNuevoChange} /></td>
+              <td><input name="marca" value={nuevoProducto.marca} onChange={handleNuevoChange} /></td>
+              <td><input name="tipoProducto" value={nuevoProducto.tipoProducto} onChange={handleNuevoChange} /></td>
+              <td><input name="categoria" value={nuevoProducto.categoria} onChange={handleNuevoChange} /></td>
+              <td><input name="colores" value={nuevoProducto.colores} onChange={handleNuevoChange} /></td>
+              <td><input name="tallas" value={nuevoProducto.tallas} onChange={handleNuevoChange} /></td>
+              <td className="text-center">—</td>
+              <td>
+                <button onClick={handleAgregarNuevo} className="text-green-600 font-bold">➕</button>
+              </td>
+            </tr>
+
+            {/* Productos existentes */}
+            {productos.map((producto) => (
+              <tr key={producto._id} className="border-t">
+                {editandoId === producto._id ? (
+                  <>
+                    <td><input name="nombre" value={formData.nombre} onChange={handleChange} /></td>
+                    <td><input name="descripcion" value={formData.descripcion} onChange={handleChange} /></td>
+                    <td><input name="precio" value={formData.precio} onChange={handleChange} /></td>
+                    <td><input name="precioOriginal" value={formData.precioOriginal} onChange={handleChange} /></td>
+                    <td><input name="descuento" value={formData.descuento} onChange={handleChange} /></td>
+                    <td><input name="marca" value={formData.marca} onChange={handleChange} /></td>
+                    <td><input name="tipoProducto" value={formData.tipoProducto} onChange={handleChange} /></td>
+                    <td><input name="categoria" value={formData.categoria} onChange={handleChange} /></td>
+                    <td><input name="colores" value={formData.colores} onChange={handleChange} /></td>
+                    <td><input name="tallas" value={formData.tallas} onChange={handleChange} /></td>
+                    <td>
+                      <Link to={`/admin/productos/${producto._id}/imagenes`} className="text-blue-600 underline">Editar imágenes</Link>
+                    </td>
+                    <td>
+                      <button onClick={handleGuardar} className="text-green-600 font-bold">💾</button>
+                      <button onClick={handleCancelar} className="text-yellow-600 font-bold ml-1">✖</button>
+                    </td>
+                  </>
+                ) : (
+                  <>
+                    <td>{producto.nombre}</td>
+                    <td>{producto.descripcion}</td>
+                    <td>{producto.precio}</td>
+                    <td>{producto.precioOriginal}</td>
+                    <td>{producto.descuento?.porcentaje}%</td>
+                    <td>{producto.marca}</td>
+                    <td>{producto.tipoProducto}</td>
+                    <td>{producto.categoria}</td>
+                    <td>{producto.colores?.join(", ")}</td>
+                    <td>{producto.tallas?.join(", ")}</td>
+                    <td>
+                      <Link to={`/admin/productos/${producto._id}/imagenes`} className="text-blue-600 underline">Editar imágenes</Link>
+                    </td>
+                    <td>
+                      <button onClick={() => handleEditar(producto)} className="text-blue-600 font-bold">✎</button>
+                      <button onClick={() => handleEliminar(producto._id)} className="text-red-600 font-bold ml-1">🗑️</button>
+                    </td>
+                  </>
+                )}
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
-      <button
-        onClick={handleAgregarNuevo}
-        className="mt-4 px-4 py-2 bg-green-600 text-white rounded-xl hover:bg-green-700 transition"
-      >
-        Guardar producto
-      </button>
     </div>
-
-    {/* Lista de productos */}
-    <div className="grid gap-4">
-      {productos.map((producto) => (
-        <div
-          key={producto._id}
-          className="bg-white p-4 rounded-2xl shadow-sm border hover:shadow-md transition"
-        >
-          {editandoId === producto._id ? (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {Object.entries(formData).map(([key, value]) => {
-                if (key === "_id" || key === "__v" || key === "imagenes") return null;
-                return (
-                  <div key={key}>
-                    <label className="block text-sm font-medium text-gray-600 capitalize">{key}</label>
-                    <input
-                      name={key}
-                      value={value}
-                      onChange={handleChange}
-                      className="w-full mt-1 p-2 border rounded-xl"
-                    />
-                  </div>
-                );
-              })}
-              <div className="flex items-end space-x-2 col-span-full">
-                <button
-                  onClick={handleGuardar}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700"
-                >
-                  💾 Guardar
-                </button>
-                <button
-                  onClick={handleCancelar}
-                  className="px-4 py-2 bg-yellow-500 text-white rounded-xl hover:bg-yellow-600"
-                >
-                  ✖ Cancelar
-                </button>
-              </div>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
-              <div>
-                <strong>Nombre:</strong> {producto.nombre}
-              </div>
-              <div>
-                <strong>Precio:</strong> ${producto.precio}
-              </div>
-              <div>
-                <strong>Descuento:</strong> {producto.descuento?.porcentaje}%
-              </div>
-              <div>
-                <strong>Colores:</strong> {producto.colores?.join(", ")}
-              </div>
-              <div>
-                <strong>Tallas:</strong> {producto.tallas?.join(", ")}
-              </div>
-              <div>
-                <strong>Imágenes:</strong>{" "}
-                <Link
-                  to={`/admin/productos/${producto._id}/imagenes`}
-                  className="text-blue-600 underline"
-                >
-                  Editar imágenes
-                </Link>
-              </div>
-              <div className="flex space-x-2 col-span-full mt-2">
-                <button
-                  onClick={() => handleEditar(producto)}
-                  className="px-3 py-1 bg-blue-500 text-white rounded-xl hover:bg-blue-600"
-                >
-                  ✎ Editar
-                </button>
-                <button
-                  onClick={() => handleEliminar(producto._id)}
-                  className="px-3 py-1 bg-red-500 text-white rounded-xl hover:bg-red-600"
-                >
-                  🗑️ Eliminar
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-      ))}
-    </div>
-  </div>
-);
-
+  );
 }
