@@ -109,7 +109,7 @@ const handleAgregarNuevo = async () => {
   fetchProductos();
 };
 
- return (
+  return (
   <div className="p-6 max-w-7xl mx-auto">
     <h2 className="text-2xl font-bold mb-6 text-gray-800">📦 Administrar Productos</h2>
 
@@ -223,3 +223,5 @@ const handleAgregarNuevo = async () => {
     </div>
   </div>
 );
+
+}
