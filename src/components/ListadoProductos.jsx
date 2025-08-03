@@ -1,84 +1,115 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import api from "../services/api";
-import { Link } from "react-router-dom";
-import 'bootstrap/dist/css/bootstrap.min.css';
 
-export default function ListadoProductos({ tipo }) {
+const tipoMap = {
+  B: 'Bicicleta',
+  A: 'Accesorio',
+  BE: 'Bicicleta Eléctrica',
+  default: 'Producto'
+};
+
+const ListadoProductos = ({ tipo }) => {
   const [productos, setProductos] = useState([]);
+  const [filtro, setFiltro] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const nombreTipo = tipoMap[tipo] || tipoMap.default;
 
   useEffect(() => {
-    const obtenerProductos = async () => {
+    const fetchProductos = async () => {
+      setLoading(true);
       try {
-        console.log("Consultando productos con tipo:", tipo);
-        const response = await api.get(`/productos?tipoProducto=${tipo}`);
-        console.log("Productos recibidos:", response.data);
-        setProductos(response.data);
-      } catch (error) {
-        console.error("Error al obtener productos:", error);
+        const res = await api.get(`/productos?tipoProducto=${tipo}`);
+        setProductos(res.data);
+      } catch (err) {
+        console.error(`❌ Error al obtener productos (${tipo}):`, err);
+        setError('No se pudieron cargar los productos.');
+      } finally {
+        setLoading(false);
       }
     };
 
-    obtenerProductos();
+    fetchProductos();
   }, [tipo]);
 
+  const productosFiltrados = filtro
+    ? productos.filter(producto =>
+        producto.nombre?.toLowerCase().includes(filtro.toLowerCase())
+      )
+    : productos;
+
   return (
-    <div className="container mt-4">
-      <h2 className="mb-4">Productos tipo {tipo}</h2>
-      <div className="row">
-        {productos.map((producto) => (
-          <div className="col-md-4 mb-4" key={producto._id}>
-            <Link to={`/${tipo}/${producto._id}`} className="text-decoration-none text-dark">
-              <div className="card h-100 shadow-sm hover-shadow" style={{ cursor: "pointer" }}>
-                {/* Imagen del producto */}
-                {producto.imagen ? (
-                  <img
-                    src={producto.imagen}
-                    className="card-img-top"
-                    alt={producto.nombre}
-                    style={{ objectFit: "cover", height: "250px" }}
-                  />
-                ) : (
-                  <div
-                    className="d-flex align-items-center justify-content-center bg-secondary text-white"
-                    style={{ height: "250px" }}
-                  >
-                    Sin imagen
-                  </div>
-                )}
+    <div className="container" style={{ padding: '2rem' }}>
+      <h2 className="mb-4 text-center">🛒 {nombreTipo}s Disponibles</h2>
 
-                <div className="card-body d-flex flex-column">
-                  <h5 className="card-title">{producto.nombre}</h5>
+      <input
+        type="text"
+        className="form-control mb-4"
+        placeholder={`Buscar ${nombreTipo.toLowerCase()}...`}
+        value={filtro}
+        onChange={e => setFiltro(e.target.value)}
+      />
 
-                  {/* Precios */}
-                  <div className="mb-2">
-                    {producto.descuento?.porcentaje ? (
-                      <>
-                        <span className="text-muted text-decoration-line-through me-2">
-                          ${producto.precioOriginal?.toLocaleString()}
-                        </span>
-                        <span className="fw-bold text-success">
-                          ${producto.precio?.toLocaleString()}
-                        </span>
-                        <div className="badge bg-danger mt-1">
-                          -{producto.descuento.porcentaje}%
-                        </div>
-                      </>
-                    ) : (
-                      <span className="fw-bold text-dark">
-                        ${producto.precio?.toLocaleString()}
-                      </span>
-                    )}
-                  </div>
-                </div>
+      {loading ? (
+        <p className="text-center">⏳ Cargando productos...</p>
+      ) : error ? (
+        <p className="text-center text-danger">{error}</p>
+      ) : productosFiltrados.length === 0 ? (
+        <p className="text-center">No se encontraron productos que coincidan con el filtro.</p>
+      ) : (
+        <div className="row">
+          {productosFiltrados.map(producto => (
+            <div className="col-md-3 mb-4" key={producto._id}>
+              <div className="card h-100 shadow-sm d-flex flex-column">
+                <Link
+                  to={`/producto/${producto._id}`}
+                  className="text-decoration-none text-dark"
+                >
+                  {producto.imagenes?.length > 0 && (
+                    <img
+                      src={
+                        producto.imagenes[0].url.startsWith('http')
+                          ? producto.imagenes[0].url
+                          : `${import.meta.env.VITE_API_URL}${producto.imagenes[0].url}`
+                      }
+                      alt={producto.nombre}
+                      className="card-img-top"
+                      style={{ height: '180px', objectFit: 'cover' }}
+                    />
+                  )}
+<div className="card-body">
+  <h5 className="card-title">{producto.nombre}</h5>
+
+  {producto.precioOriginal && producto.precioOriginal > producto.precio ? (
+    <div>
+      <p className="mb-1">
+        <span className="text-danger me-2" style={{ textDecoration: 'line-through' }}>
+          ${Math.round(producto.precioOriginal).toLocaleString()}
+        </span>
+        <span className="text-success fw-bold">
+          ${Math.round(producto.precio).toLocaleString()}
+        </span>
+      </p>
+      <span className="badge bg-primary">
+        -{Math.round(((producto.precioOriginal - producto.precio) / producto.precioOriginal) * 100)}% OFF
+      </span>
+    </div>
+  ) : (
+    <p className="fw-bold text-success">
+      ${Math.round(producto.precio).toLocaleString()}
+    </p>
+  )}
+</div>
+                </Link>
               </div>
-            </Link>
-          </div>
-        ))}
-
-        {productos.length === 0 && (
-          <p className="text-center">No hay productos para este tipo.</p>
-        )}
-      </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
-}
+};
+
+export default ListadoProductos;
