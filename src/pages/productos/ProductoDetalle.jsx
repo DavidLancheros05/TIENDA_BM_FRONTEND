@@ -16,6 +16,7 @@ const ProductoDetalle = () => {
   const [colorSeleccionado, setColorSeleccionado] = useState('');
   const [tallaSeleccionada, setTallaSeleccionada] = useState('');
   const [stockDisponible, setStockDisponible] = useState(0);
+  const [productoAgotado, setProductoAgotado] = useState(false);
   const { agregarAlCarrito } = useContext(CarritoContext);
   const navigate = useNavigate();
   const [resenas, setResenas] = useState([]);
@@ -58,6 +59,15 @@ const ProductoDetalle = () => {
 
     fetchProducto();
   }, [id]);
+
+  useEffect(() => {
+    if (producto?.variantes?.length > 0) {
+      const agotado = producto.variantes.every((v) => v.stock === 0);
+      setProductoAgotado(agotado);
+    } else {
+      setProductoAgotado(true);
+    }
+  }, [producto]);
 
   useEffect(() => {
     if (producto && colorSeleccionado && tallaSeleccionada && producto.variantes) {
@@ -118,7 +128,7 @@ const ProductoDetalle = () => {
 
           <div className="row mt-4">
             <div className="col-md-4">
-              <InfoBasicaProducto producto={producto} />
+              <InfoBasicaProducto producto={producto} agotado={productoAgotado} />
             </div>
             <div className="col-md-4">
               <SeleccionVariantes

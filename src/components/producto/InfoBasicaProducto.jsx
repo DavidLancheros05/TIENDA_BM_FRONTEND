@@ -1,12 +1,13 @@
 // src/components/producto/InfoBasicaProducto.jsx
 import React from 'react';
 
-const InfoBasicaProducto = ({ producto }) => {
+const InfoBasicaProducto = ({ producto, agotado }) => {
   return (
     <>
       <p><strong>Marca:</strong> {producto.marca}</p>
       <p><strong>Categoría:</strong> {producto.categoria}</p>
-      <p><strong>Estado:</strong> {producto.stock > 0 ? 'Disponible' : 'Agotado'}</p>
+      <p><strong>Estado:</strong> {agotado ? 'Agotado' : 'Disponible'}</p>
+      
       {producto.precioOriginal && producto.precioOriginal > producto.precio && (
         <p>
           <span className="text-muted text-decoration-line-through">
@@ -19,7 +20,8 @@ const InfoBasicaProducto = ({ producto }) => {
           )}
         </p>
       )}
-      <h4 className="text-success">
+
+      <h4 className={`fw-bold ${agotado ? 'text-secondary' : 'text-success'}`}>
         ${producto.precio.toLocaleString('es-CO')}
       </h4>
     </>
