@@ -4,10 +4,10 @@ import Inicio from './pages/Inicio';
 import Footer from './components/Footer';
 import Header from './components/Header';
 import LoginAdmin from './pages/auth/Login';
-import ProductoDetalle from './pages/productos/ProductoDetalle';
+
 import ListadoProductos from './components/ListadoProductos';
 import Carrito from './pages/carrito/Carrito';
-import BicicletasElectrica from './pages/productos/BicicletasElectrica';
+
 import Checkout from './pages/carrito/Checkout';
 import PagoExitoso from './components/PagoExitoso';
 import PagoCancelado from './pages/cliente/pagos/PagoCancelado';
@@ -22,7 +22,15 @@ import BotonWhatsApp from './components/BotonWhatsApp'; // ✅ Asegúrate de imp
 import BurbujaCarrito from './components/BurbujaCarrito';
 import ForgotPassword from './pages/auth/ForgotPassword'; // importa al inicio
 import ResetPassword from './pages/auth/ResetPassword';
+
+import ProductoDetalle from './pages/productos/ProductoDetalle';
+
+
 import AdminAsignarVariantes from './pages/admin/AdminAsignarVariantes';
+import BicicletasElectrica from './pages/productos/BicicletasElectrica';
+import Bicicletas from './pages/productos/Bicicletas';
+import Accesorios from './pages/productos/Accesorios';
+
 const App = () => {
   return (
     <BrowserRouter>
@@ -31,12 +39,16 @@ const App = () => {
         <Route path="/" element={<Inicio />} />
         <Route path="/login" element={<LoginAdmin />} />
         <Route path="/producto/:id" element={<ProductoDetalle />} />
+
+
         <Route path="/bicicletaselectrica" element={<BicicletasElectrica />} />
-        <Route path="/bicicletas" element={<ListadoProductos />} />
-        <Route path="/accesorios" element={<ListadoProductos />} />
+        <Route path="/bicicletas" element={<Bicicletas  />} />
+        <Route path="/accesorios" element={<Accesorios  />} />
+
+
         <Route path="/carrito" element={<Carrito />} />
         <Route path="/checkout" element={<Checkout />} />
-
+ <Route path="/productos/:id" element={<ProductoDetalle />} /> {/* <-- esta es la clave */}
         <Route path="/pago-exitoso/*" element={<PagoExitoso />} />
         <Route path="/pago-cancelado/*" element={<PagoCancelado />} />
         <Route path="/admin/productos/:id/imagenes" element={<EditarImagenesProducto />} />
