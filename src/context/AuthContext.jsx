@@ -1,37 +1,43 @@
+// src/context/AuthContext.jsx
 import React, { createContext, useState, useEffect, useContext } from 'react';
+import api from '../services/api'; // importa tu instancia de Axios
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [usuario, setUsuario] = useState(() => {
-    const storedUser = localStorage.getItem('usuario');
-    return storedUser ? JSON.parse(storedUser) : null;
-  });
+  const [usuario, setUsuario] = useState(null);
+  const [cargando, setCargando] = useState(true);
 
+  // Verificar token con backend al iniciar
   useEffect(() => {
-    if (usuario) {
-      localStorage.setItem('usuario', JSON.stringify(usuario));
-      if (usuario.token) {
-        localStorage.setItem('token', usuario.token);
+    const validarToken = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setCargando(false);
+        return;
       }
-    } else {
-      localStorage.removeItem('usuario');
-      localStorage.removeItem('token');
-    }
-  }, [usuario]);
 
-  const login = (user) => {
-    const usuarioConId = {
-      ...user,
-      _id: user._id || user.id,
+      try {
+        const res = await api.get('/auth/validate-token'); // ✅ esta ruta la creas en el backend abajo
+        const user = res.data.usuario || res.data.user;
+        setUsuario({ ...user, token });
+        localStorage.setItem('usuario', JSON.stringify({ ...user, token }));
+      } catch (error) {
+        console.warn('❌ Token inválido. Cerrando sesión.');
+        logout();
+      } finally {
+        setCargando(false);
+      }
     };
 
+    validarToken();
+  }, []);
+
+  const login = (user) => {
+    const usuarioConId = { ...user, _id: user._id || user.id };
     setUsuario(usuarioConId);
-
-    if (user.token) {
-      localStorage.setItem('token', user.token);
-    }
-
+    localStorage.setItem('usuario', JSON.stringify(usuarioConId));
+    if (user.token) localStorage.setItem('token', user.token);
     console.log('✅ Usuario logueado:', usuarioConId);
   };
 
@@ -43,11 +49,10 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ usuario, login, logout }}>
+    <AuthContext.Provider value={{ usuario, login, logout, cargando }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-// ✅ Exporta el hook personalizado que te causaba el error
 export const useAuth = () => useContext(AuthContext);
