@@ -139,7 +139,7 @@ useEffect(() => {
         tallas: "",
       });
       fetchProductos();
-      navigate(`/admin/productos/${nuevoId}/variantes`);
+      navigate(`/admin/productos/${nuevoId}/variantes`, { state: { nuevo: true } });
     } catch (error) {
       console.error("Error al crear producto:", error);
       alert("No se pudo crear el producto");
