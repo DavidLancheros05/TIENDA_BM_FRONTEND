@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import api from "../../services/api";
 
 export default function AdminAsignarVariantes() {
-  const { id } = useParams(); // ID del producto
+  const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const esNuevo = location.state?.nuevo;
 
   const [producto, setProducto] = useState(null);
   const [variantes, setVariantes] = useState([]);
@@ -15,7 +17,12 @@ export default function AdminAsignarVariantes() {
       try {
         const res = await api.get(`/productos/${id}`);
         setProducto(res.data);
-        generarCombinaciones(res.data.colores, res.data.tallas);
+
+        if (res.data.variantes && res.data.variantes.length > 0) {
+          setVariantes(res.data.variantes); // ✅ usa variantes ya existentes
+        } else {
+          generarCombinaciones(res.data.colores, res.data.tallas); // 🆕 si es nuevo
+        }
       } catch (error) {
         console.error("Error al cargar el producto:", error);
       } finally {
@@ -46,10 +53,22 @@ export default function AdminAsignarVariantes() {
     try {
       await api.post(`/productos/${id}/variantes`, { variantes });
       alert("Variantes guardadas correctamente.");
-      navigate(`/admin/productos/${id}/imagenes`);
+      if (esNuevo) {
+        navigate(`/admin/productos/${id}/imagenes`);
+      } else {
+        navigate("/admin/productos");
+      }
     } catch (error) {
       console.error("Error al guardar variantes:", error);
       alert("Error al guardar variantes.");
+    }
+  };
+
+  const volverSinGuardar = () => {
+    if (
+      window.confirm("¿Seguro que deseas volver sin guardar los cambios?")
+    ) {
+      navigate("/admin/productos");
     }
   };
 
@@ -79,9 +98,15 @@ export default function AdminAsignarVariantes() {
           ))
         )}
       </div>
-      <button className="btn btn-success mt-4" onClick={guardarVariantes}>
-        Guardar stock
-      </button>
+
+      <div className="mt-4 d-flex gap-2">
+        <button className="btn btn-success" onClick={guardarVariantes}>
+          Guardar stock
+        </button>
+        <button className="btn btn-secondary" onClick={volverSinGuardar}>
+          Volver sin guardar
+        </button>
+      </div>
     </div>
   );
 }
